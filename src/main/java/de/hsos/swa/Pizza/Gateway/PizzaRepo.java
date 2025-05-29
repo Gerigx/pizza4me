@@ -52,4 +52,12 @@ public class PizzaRepo implements PizzaCatalog, PanacheRepository<Pizza> {
         return pizza;
     }
 
+    @Override
+    public boolean isExisting(String name) {
+        if (find("name", name).firstResult() == null) {
+            return false;            
+        }
+        return true;
+    }
+
 }

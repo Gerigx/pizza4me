@@ -52,4 +52,10 @@ public class PizzaService implements PizzaController {
 
     }
 
+
+    @Override
+    public boolean existsByName(String name) {
+        return pizzaCatalog.isExisting(name);
+    }
+
 }

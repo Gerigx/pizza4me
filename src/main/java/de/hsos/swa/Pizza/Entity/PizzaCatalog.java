@@ -11,4 +11,5 @@ public interface PizzaCatalog {
     public Pizza updatePizza(long id, Pizza pizza);
 
     public Pizza deletePizza(long id);
+    public boolean isExisting(String name);
 }

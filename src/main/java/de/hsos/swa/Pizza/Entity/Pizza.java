@@ -1,5 +1,7 @@
 package de.hsos.swa.Pizza.Entity;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -11,7 +13,7 @@ public class Pizza {
     private long id;
     private String name;
     private String beschreibung;
-    private float price;
+    private BigDecimal price;
     private int sellCounter;
 
     
@@ -21,7 +23,7 @@ public class Pizza {
     public Pizza() {
     }
 
-    public Pizza(String name, String beschreibung, float price) {
+    public Pizza(String name, String beschreibung, BigDecimal price) {
         this.name = name;
         this.beschreibung = beschreibung;
         this.price = price;
@@ -36,11 +38,11 @@ public class Pizza {
         this.name = name;
     }
 
-    public float getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

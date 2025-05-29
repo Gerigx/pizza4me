@@ -20,3 +20,5 @@ INSERT INTO Pizza (id, name, beschreibung, price, sellCounter) VALUES
 (19, 'Mortadella', 'Mortadella, Pistazien, Stracciatella und Rucola', 13.80, 52),
 (20, 'Nduja', 'Scharfe kalabrische Wurst, Mozzarella und Honig', 12.50, 43),
 (21, 'Tartufo', 'Trüffelcreme, Pilze, Mozzarella und Parmesan', 16.90, 19);
+
+ALTER SEQUENCE pizza_seq RESTART WITH 22;

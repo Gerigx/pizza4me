@@ -14,4 +14,7 @@ public interface PizzaController {
 
     public Pizza deletePizza(long id);
 
+    
+    public boolean existsByName(String name);
+
 }
