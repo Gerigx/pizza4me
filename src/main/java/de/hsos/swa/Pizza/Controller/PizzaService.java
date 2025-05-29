@@ -4,12 +4,25 @@ import java.util.List;
 
 import de.hsos.swa.Pizza.Entity.Pizza;
 import de.hsos.swa.Pizza.Entity.PizzaCatalog;
+import de.hsos.swa.shared.Events.PizzaBestelltEvent;
+import io.quarkus.panache.common.Page;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.ObservesAsync;
 import jakarta.inject.Inject;
 
+@ApplicationScoped
 public class PizzaService implements PizzaController {
 
     @Inject
     PizzaCatalog pizzaCatalog;
+
+    // Events
+    public void onPizzaBestellt(@ObservesAsync PizzaBestelltEvent event){
+        Pizza pizza = getPizza(event.getPizzaId());
+        pizza.setSellCounter(pizza.getSellCounter() + 1);
+        this.updatePizza(pizza.getId(), pizza);
+    }
+
 
     @Override
     public Pizza getPizza(long id) {
@@ -17,8 +30,8 @@ public class PizzaService implements PizzaController {
     }
 
     @Override
-    public List<Pizza> getAllPizzas() {
-        return pizzaCatalog.getAllPizzas();
+    public List<Pizza> getAllPizzas(int page, int size) {
+        return pizzaCatalog.getAllPizzas(page, size);
     }
 
     @Override

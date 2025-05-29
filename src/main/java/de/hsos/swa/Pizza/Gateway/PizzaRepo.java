@@ -5,7 +5,12 @@ import java.util.List;
 import de.hsos.swa.Pizza.Entity.Pizza;
 import de.hsos.swa.Pizza.Entity.PizzaCatalog;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import jakarta.enterprise.context.ApplicationScoped;
 
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
+import io.quarkus.panache.common.Page;
+
+@ApplicationScoped
 public class PizzaRepo implements PizzaCatalog, PanacheRepository<Pizza> {
 
     @Override
@@ -13,9 +18,13 @@ public class PizzaRepo implements PizzaCatalog, PanacheRepository<Pizza> {
         return findById(id);
     }
 
+    // https://quarkus.io/guides/hibernate-orm-panache#paging
     @Override
-    public List<Pizza> getAllPizzas() {
-        return listAll();
+    public List<Pizza> getAllPizzas(int page, int size) {
+        return findAll()
+            .page(Page.of(page,size))
+            .stream()
+            .toList();
     }
 
     @Override

@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface PizzaCatalog {
     public Pizza getPizza(long id);
-    public List<Pizza> getAllPizzas();
+    public List<Pizza> getAllPizzas(int page, int size);
 
     public Pizza createPizza(Pizza pizza);
 

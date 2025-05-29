@@ -14,9 +14,18 @@ public class Pizza {
     private float price;
     private int sellCounter;
 
-    public Pizza(String name, float price) {
+    
+    
+
+
+    public Pizza() {
+    }
+
+    public Pizza(String name, String beschreibung, float price) {
         this.name = name;
+        this.beschreibung = beschreibung;
         this.price = price;
+        this.sellCounter = 0;
     }
 
     public String getName() {
