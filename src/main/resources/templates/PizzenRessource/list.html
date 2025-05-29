@@ -1,0 +1,34 @@
+{#include HomeRessource/base.html}
+{#title}Alle Pizzen{/title}
+{#main}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>🍕 Alle Pizzen</h1>
+    <a href="/pizzen/neu" class="btn btn-success">Neue Pizza</a>
+</div>
+
+<div class="row">
+    {#for pizza in pizzen}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{pizza.name}</h5>
+                <p class="card-text">{pizza.beschreibung}</p>
+                <p class="text-muted">Preis: {pizza.getPrice}€</p>
+            </div>
+            <div class="card-footer">
+                <a href="/pizzen/{pizza.getId}" class="btn btn-primary btn-sm">Details</a>
+                <a href="/pizzen/{pizza.getId}/bearbeiten" class="btn btn-secondary btn-sm">Bearbeiten</a>
+            </div>
+        </div>
+    </div>
+    {/for}
+</div>
+
+{#if pizzen.isEmpty()}
+<div class="text-center">
+    <p>Noch keine Pizzen vorhanden.</p>
+    <a href="/pizzen/neu" class="btn btn-primary">Erste Pizza anlegen</a>
+</div>
+{/if}
+{/main}
+{/include}

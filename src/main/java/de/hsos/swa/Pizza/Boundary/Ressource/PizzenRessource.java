@@ -16,7 +16,9 @@ import org.jboss.resteasy.reactive.common.util.RestMediaType;
 import de.hsos.swa.Pizza.Boundary.DTO.PizzaDTO;
 import de.hsos.swa.Pizza.Controller.PizzaController;
 import de.hsos.swa.Pizza.Entity.Pizza;
-
+import io.quarkus.qute.CheckedTemplate;
+import io.quarkus.qute.Location;
+import io.quarkus.qute.TemplateInstance;
 import io.quarkus.resteasy.reactive.links.InjectRestLinks;
 import io.quarkus.resteasy.reactive.links.RestLink;
 import io.quarkus.resteasy.reactive.links.RestLinkType;
@@ -38,6 +40,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 
 @Path("/pizzen")
@@ -48,6 +51,36 @@ public class PizzenRessource {
 
     @Inject
     PizzaController pizzaController;
+
+    //html endpoints
+    @CheckedTemplate
+    public static class Templates {
+        @Location("PizzenRessource/list")
+        public static native TemplateInstance list(List<Pizza> pizzen);
+        @Location("PizzenRessource/detail")
+        public static native TemplateInstance detail(Pizza pizza);
+    }
+
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    public TemplateInstance getAllePizzenHTML(
+            @QueryParam("page") @DefaultValue("0") @Min(0) int page,
+            @QueryParam("size") @DefaultValue("20") @Min(1) @Max(100) int size
+    ) {
+        List<Pizza> pizzen = pizzaController.getAllPizzas(page, size); // deine bestehende Logik
+        return Templates.list(pizzen);
+    }
+    
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.TEXT_HTML)
+    public TemplateInstance getPizzaHTML(@PathParam("id") Long id) {
+        Pizza pizza = pizzaController.getPizza(id);
+        if (pizza == null) {
+            throw new WebApplicationException(404);
+        }
+        return Templates.detail(pizza);
+    }
 
     @GET
     @RestLink(rel = "list")

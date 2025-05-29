@@ -1,0 +1,25 @@
+{#include HomeRessource/base.html}
+{#title}{pizza.name}{/title}
+{#main}
+<div class="row">
+    <div class="col-md-8">
+        <h1>{pizza.name}</h1>
+        <p class="lead">{pizza.beschreibung}</p>
+        <h3>Preis: {pizza.getPrice}€</h3>
+        
+        <div class="mt-4">
+            <a href="/pizzen" class="btn btn-secondary">← Zurück zur Liste</a>
+            <a href="/pizzen/{pizza.id}/bearbeiten" class="btn btn-primary">Bearbeiten</a>
+            <button class="btn btn-success" onclick="bestellen()">Bestellen</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function bestellen(pizzaId) {
+    // Hier könntest du später eine Bestellung auslösen
+    alert('Pizza ' + pizzaId + ' wurde bestellt!');
+}
+</script>
+{/main}
+{/include}

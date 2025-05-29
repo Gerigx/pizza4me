@@ -85,6 +85,18 @@
             <artifactId>quarkus-junit5-mockito</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+    <groupId>io.quarkus</groupId>
+    <artifactId>quarkus-rest-client</artifactId>
+    </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-rest-client-jackson</artifactId>
+        </dependency>
+        <dependency>
+    <groupId>io.quarkiverse.qute.web</groupId>
+    <artifactId>quarkus-qute-web</artifactId>
+</dependency>
     </dependencies>
 
     <build>

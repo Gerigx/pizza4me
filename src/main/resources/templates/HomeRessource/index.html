@@ -1,0 +1,41 @@
+{#include HomeRessource/base.html}
+{#title}Willkommen{/title}
+{#main}
+<div class="row">
+    <div class="col-md-12">
+        <h1>Willkommen in der Pizza App!</h1>
+        <p>Wähle eine Option aus der Navigation:</p>
+        
+        <div class="row mt-4">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">🍕 Pizzen</h5>
+                        <p class="card-text">Alle verfügbaren Pizzen anzeigen</p>
+                        <a href="/pizzen" class="btn btn-primary">Zu den Pizzen</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">👥 Kunden</h5>
+                        <p class="card-text">Kundenverwaltung</p>
+                        <a href="/kunden" class="btn btn-primary">Zu den Kunden</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">📋 Bestellungen</h5>
+                        <p class="card-text">Alle Bestellungen</p>
+                        <a href="/bestellungen" class="btn btn-primary">Zu den Bestellungen</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/main}
+{/include}
