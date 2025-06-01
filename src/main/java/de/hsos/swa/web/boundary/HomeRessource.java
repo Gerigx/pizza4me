@@ -15,7 +15,6 @@ public class HomeRessource {
     public static class Templates {
         @Location("HomeRessource/index")
         public static native TemplateInstance index();
-        //public static native TemplateInstance about();
     }
     
     @GET

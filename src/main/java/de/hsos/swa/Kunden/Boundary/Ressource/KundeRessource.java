@@ -12,14 +12,7 @@ import jakarta.ws.rs.core.MediaType;
 
 @Path("/kunde")
 public class KundeRessource {
-    @Inject
-    @Location("pub/hello")
-    Template hello;
+    
 
-    @GET
-    @Produces(MediaType.TEXT_HTML)
-    public TemplateInstance get(@QueryParam("name") String name) {
-        return hello.data("name", name);  
-    }
 
 }
