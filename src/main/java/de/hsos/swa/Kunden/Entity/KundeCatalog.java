@@ -13,4 +13,11 @@ public interface KundeCatalog {
 
     public Kunde deleteKunde(Long id);
 
+    public Adresse getKundeAdresse(Long kundeId);
+    public Kunde updateKundeAdresse(Long kundeId, Adresse adresse);
+    public Kunde deleteKundeAdresse(Long kundeId);
+
+    public Kunde findByUsername(String username);
+    public boolean existsByUsername(String username);
+
 }

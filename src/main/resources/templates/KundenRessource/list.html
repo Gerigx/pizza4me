@@ -1,0 +1,50 @@
+{#include HomeRessource/base.html}
+{#title}Alle Kunden{/title}
+{#main}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>👥 Alle Kunden</h1>
+    <div>
+        <a href="/auth/register" class="btn btn-success">Neuer Kunde registrieren</a>
+        <a href="/kunden/me" class="btn btn-info">Mein Profil</a>
+    </div>
+</div>
+
+<div class="row">
+    {#for kunde in kunden}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">{kunde.getFullName}</h5>
+                <p class="card-text">
+                    <strong>Username:</strong> {kunde.username}<br>
+                    <strong>Rolle:</strong> {kunde.role}<br>
+                    {#if kunde.adresse}
+                    <strong>Ort:</strong> {kunde.adresse.ort}
+                    {/if}
+                </p>
+                <small class="text-muted">ID: {kunde.id}</small>
+            </div>
+            <div class="card-footer">
+                <a href="/kunde/{kunde.id}" class="btn btn-primary btn-sm">Details</a>
+                <a href="/kunde/{kunde.id}/adresse" class="btn btn-secondary btn-sm">Adresse</a>
+            </div>
+        </div>
+    </div>
+    {/for}
+</div>
+
+{#if kunden.isEmpty()}
+<div class="text-center">
+    <p>Noch keine Kunden vorhanden.</p>
+    <a href="/auth/register" class="btn btn-primary">Ersten Kunden registrieren</a>
+</div>
+{/if}
+
+<!-- Debug Info -->
+<div class="mt-5 p-3 bg-light border rounded">
+    <h6>🔧 Debug Info</h6>
+    <p><strong>Anzahl Kunden:</strong> {kunden.size()}</p>
+    <p><strong>Template:</strong> KundenRessource/list.html</p>
+</div>
+{/main}
+{/include}

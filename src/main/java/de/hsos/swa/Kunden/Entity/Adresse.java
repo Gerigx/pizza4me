@@ -5,53 +5,59 @@ import jakarta.persistence.Embeddable;
 @Embeddable
 public class Adresse {
     
-    private String street;        
-    private String postalCode;  
-    private String city;         
-    private String country;       
+    private String strasse;        
+    private String hausnummer;     // ← War vergessen!
+    private String plz;            // postalCode → plz
+    private String ort;            // city → ort
+    private String land;           // country → land
     
     public Adresse() {}
     
-    public Adresse(String street, String postalCode, String city, String country) {
-        this.street = street;
-        this.postalCode = postalCode;
-        this.city = city;
-        this.country = country;
+    public Adresse(String strasse, String hausnummer, String plz, String ort, String land) {
+        this.strasse = strasse;
+        this.hausnummer = hausnummer;
+        this.plz = plz;
+        this.ort = ort;
+        this.land = land;
     }
 
-    public String getStreet() {
-        return street;
+    public String getStrasse() {
+        return strasse;
     }
 
-    public void setStreet(String street) {
-        this.street = street;
+    public void setStrasse(String strasse) {
+        this.strasse = strasse;
     }
 
-    public String getPostalCode() {
-        return postalCode;
+    public String getHausnummer() {
+        return hausnummer;
     }
 
-    public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
+    public void setHausnummer(String hausnummer) {
+        this.hausnummer = hausnummer;
     }
 
-    public String getCity() {
-        return city;
+    public String getPlz() {
+        return plz;
     }
 
-    public void setCity(String city) {
-        this.city = city;
+    public void setPlz(String plz) {
+        this.plz = plz;
     }
 
-    public String getCountry() {
-        return country;
+    public String getOrt() {
+        return ort;
     }
 
-    public void setCountry(String country) {
-        this.country = country;
+    public void setOrt(String ort) {
+        this.ort = ort;
     }
 
-    
-    
+    public String getLand() {
+        return land;
+    }
 
+    public void setLand(String land) {
+        this.land = land;
+    }
 }
