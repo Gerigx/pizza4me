@@ -1,0 +1,26 @@
+{#include HomeRessource/base.html}
+  {#title}Pizza bearbeiten{/title}
+  {#main}
+    <h1>🍕 Pizza bearbeiten</h1>
+
+    <form method="post" action="/pizzen/{pizza.id}">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input id="name" name="name" type="text" class="form-control" value="{pizza.name}" required>
+      </div>
+
+      <div class="form-group">
+        <label for="beschreibung">Beschreibung</label>
+        <textarea id="beschreibung" name="beschreibung" class="form-control" required>{pizza.beschreibung}</textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="preis">Preis (€)</label>
+        <input id="preis" name="preis" type="number" step="0.01" class="form-control" value="{pizza.getPrice}" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Speichern</button>
+      <a href="/pizzen/{pizza.id}" class="btn btn-secondary">Abbrechen</a>
+    </form>
+  {/main}
+{/include}

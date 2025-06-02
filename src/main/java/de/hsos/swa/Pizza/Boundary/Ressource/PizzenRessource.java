@@ -1,7 +1,9 @@
 package de.hsos.swa.Pizza.Boundary.Ressource;
 
 import java.net.URI;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 // resillienz
@@ -45,7 +47,7 @@ import jakarta.ws.rs.core.MediaType;
 
 @Path("/pizzen")
 @Produces({MediaType.APPLICATION_JSON, RestMediaType.APPLICATION_HAL_JSON})
-@Consumes(MediaType.APPLICATION_JSON)
+@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
 @Transactional
 public class PizzenRessource {
 
@@ -55,10 +57,8 @@ public class PizzenRessource {
     //html endpoints
     @CheckedTemplate
     public static class Templates {
-        @Location("PizzenRessource/list")
+        @Location("HomeRessource/list")
         public static native TemplateInstance list(List<Pizza> pizzen);
-        @Location("PizzenRessource/detail")
-        public static native TemplateInstance detail(Pizza pizza);
     }
 
     @GET
@@ -68,19 +68,13 @@ public class PizzenRessource {
             @QueryParam("size") @DefaultValue("20") @Min(1) @Max(100) int size
     ) {
         List<Pizza> pizzen = pizzaController.getAllPizzas(page, size); // deine bestehende Logik
+        pizzen.stream()
+                .sorted(Comparator.comparing(Pizza::getId))
+                .map(PizzaDTO::toDTO)
+                .toList();
         return Templates.list(pizzen);
     }
-    
-    @GET
-    @Path("/{id}")
-    @Produces(MediaType.TEXT_HTML)
-    public TemplateInstance getPizzaHTML(@PathParam("id") Long id) {
-        Pizza pizza = pizzaController.getPizza(id);
-        if (pizza == null) {
-            throw new WebApplicationException(404);
-        }
-        return Templates.detail(pizza);
-    }
+
 
     @GET
     @RestLink(rel = "list")
@@ -96,9 +90,11 @@ public class PizzenRessource {
             throw new NotFoundException();            
         }
 
-        List<PizzaDTO> pizzaDTOs = pizzen.stream()
-            .map(PizzaDTO::toDTO)
-            .toList();
+        List<PizzaDTO> pizzaDTOs = pizzen
+                .stream()
+                .sorted(Comparator.comparing(Pizza::getId))
+                .map(PizzaDTO::toDTO)
+                .toList();
 
         return RestResponse.ok(pizzaDTOs);        
     }
