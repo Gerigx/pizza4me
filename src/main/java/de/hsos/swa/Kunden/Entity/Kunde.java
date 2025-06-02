@@ -160,8 +160,18 @@ public class Kunde {
     }
 
     public boolean verifyPassword(String password) {
-        //return BcryptUtil.matches(password, this.password);
-        return true;
+    // TESTCODE: Frischen Hash erstellen und sofort prüfen
+        if (password.equals("password123")) {
+            String testHash = BcryptUtil.bcryptHash(password);
+            boolean selfTest = BcryptUtil.matches(password, testHash);
+            System.out.println("Self-test (should be true): " + selfTest);
+        
+        if (!selfTest) {
+            System.out.println("PROBLEM: Quarkus BCrypt funktioniert nicht mit sich selbst!");
+        }
+    }
+    
+    return BcryptUtil.matches(password, this.password);
     }
 
     public String getRole() {

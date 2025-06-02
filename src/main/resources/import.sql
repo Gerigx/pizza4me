@@ -24,21 +24,21 @@ INSERT INTO Pizza (id, name, beschreibung, price, sellCounter) VALUES
 -- Kunden-Testdaten
 -- Password für alle: "password123" (gehashed mit BCrypt)
 INSERT INTO Kunde (id, vorname, nachname, username, password, role, strasse, hausnummer, plz, ort, land, orders) VALUES 
-(1, 'Max', 'Mustermann', 'admin', '$2a$10$N9qo8uLOickgx2ZMRZoMye7gEYZqQVuQxXo2fZzCJo6FE8JNE4gO2', 'ADMIN', 'Musterstraße', '1', '12345', 'Berlin', 'Deutschland', NULL),
-(2, 'Anna', 'Schmidt', 'anna.schmidt', '$2a$10$N9qo8uLOickgx2ZMRZoMye7gEYZqQVuQxXo2fZzCJo6FE8JNE4gO2', 'USER', 'Hauptstraße', '42', '80331', 'München', 'Deutschland', NULL),
-(3, 'Peter', 'Müller', 'peter.mueller', '$2a$10$N9qo8uLOickgx2ZMRZoMye7gEYZqQVuQxXo2fZzCJo6FE8JNE4gO2', 'USER', 'Kirchstraße', '15', '20095', 'Hamburg', 'Deutschland', NULL),
-(4, 'Lisa', 'Wagner', 'lisa.wagner', '$2a$10$N9qo8uLOickgx2ZMRZoMye7gEYZqQVuQxXo2fZzCJo6FE8JNE4gO2', 'USER', 'Rosenstraße', '7', '50667', 'Köln', 'Deutschland', NULL),
-(5, 'Thomas', 'Becker', 'thomas.becker', '$2a$10$N9qo8uLOickgx2ZMRZoMye7gEYZqQVuQxXo2fZzCJo6FE8JNE4gO2', 'USER', 'Bahnhofstraße', '23', '70173', 'Stuttgart', 'Deutschland', NULL),
-(6, 'Sarah', 'Fischer', 'sarah.fischer', '$2a$10$N9qo8uLOickgx2ZMRZoMye7gEYZqQVuQxXo2fZzCJo6FE8JNE4gO2', 'USER', 'Gartenstraße', '8', '60311', 'Frankfurt', 'Deutschland', NULL),
-(7, 'Michael', 'Weber', 'michael.weber', '$2a$10$N9qo8uLOickgx2ZMRZoMye7gEYZqQVuQxXo2fZzCJo6FE8JNE4gO2', 'USER', 'Schulstraße', '12', '90402', 'Nürnberg', 'Deutschland', NULL),
-(8, 'Julia', 'Meyer', 'julia.meyer', '$2a$10$N9qo8uLOickgx2ZMRZoMye7gEYZqQVuQxXo2fZzCJo6FE8JNE4gO2', 'USER', 'Marktplatz', '5', '01067', 'Dresden', 'Deutschland', NULL),
-(9, 'David', 'Richter', 'david.richter', '$2a$10$N9qo8uLOickgx2ZMRZoMye7gEYZqQVuQxXo2fZzCJo6FE8JNE4gO2', 'USER', 'Lindenstraße', '33', '30159', 'Hannover', 'Deutschland', NULL),
-(10, 'Stefanie', 'Koch', 'stefanie.koch', '$2a$10$N9qo8uLOickgx2ZMRZoMye7gEYZqQVuQxXo2fZzCJo6FE8JNE4gO2', 'USER', 'Am Stadtpark', '18', '28203', 'Bremen', 'Deutschland', NULL),
-(11, 'Markus', 'Zimmermann', 'markus.zimmermann', '$2a$10$N9qo8uLOickgx2ZMRZoMye7gEYZqQVuQxXo2fZzCJo6FE8JNE4gO2', 'USER', 'Kastanienallee', '44', '10435', 'Berlin', 'Deutschland', NULL),
-(12, 'Melanie', 'Hoffmann', 'melanie.hoffmann', '$2a$10$N9qo8uLOickgx2ZMRZoMye7gEYZqQVuQxXo2fZzCJo6FE8JNE4gO2', 'USER', 'Dorfstraße', '2', '49584', 'Fürstenau', 'Deutschland', NULL),
-(13, 'Oliver', 'Neumann', 'oliver.neumann', '$2a$10$N9qo8uLOickgx2ZMRZoMye7gEYZqQVuQxXo2fZzCJo6FE8JNE4gO2', 'USER', 'Eichenweg', '9', '49074', 'Osnabrück', 'Deutschland', NULL),
-(14, 'Claudia', 'Braun', 'claudia.braun', '$2a$10$N9qo8uLOickgx2ZMRZoMye7gEYZqQVuQxXo2fZzCJo6FE8JNE4gO2', 'USER', 'Bergstraße', '16', '76131', 'Karlsruhe', 'Deutschland', NULL),
-(15, 'Andreas', 'Krause', 'andreas.krause', '$2a$10$N9qo8uLOickgx2ZMRZoMye7gEYZqQVuQxXo2fZzCJo6FE8JNE4gO2', 'USER', 'Sonnenstraße', '27', '45127', 'Essen', 'Deutschland', NULL);
+(1, 'Max', 'Mustermann', 'admin', '$2a$10$089kRT7Qijy.lpBVpjjSVOlw/HG6ARopyf1dBsaFYanXzfMl0MJv2', 'ADMIN', 'Musterstraße', '1', '12345', 'Berlin', 'Deutschland', NULL),
+(2, 'Anna', 'Schmidt', 'anna.schmidt', '$2a$10$089kRT7Qijy.lpBVpjjSVOlw/HG6ARopyf1dBsaFYanXzfMl0MJv2', 'USER', 'Hauptstraße', '42', '80331', 'München', 'Deutschland', NULL),
+(3, 'Peter', 'Müller', 'peter.mueller', '$2a$10$089kRT7Qijy.lpBVpjjSVOlw/HG6ARopyf1dBsaFYanXzfMl0MJv2', 'USER', 'Kirchstraße', '15', '20095', 'Hamburg', 'Deutschland', NULL),
+(4, 'Lisa', 'Wagner', 'lisa.wagner', '$2a$10$089kRT7Qijy.lpBVpjjSVOlw/HG6ARopyf1dBsaFYanXzfMl0MJv2', 'USER', 'Rosenstraße', '7', '50667', 'Köln', 'Deutschland', NULL),
+(5, 'Thomas', 'Becker', 'thomas.becker', '$2a$10$089kRT7Qijy.lpBVpjjSVOlw/HG6ARopyf1dBsaFYanXzfMl0MJv2', 'USER', 'Bahnhofstraße', '23', '70173', 'Stuttgart', 'Deutschland', NULL),
+(6, 'Sarah', 'Fischer', 'sarah.fischer', '$2a$10$089kRT7Qijy.lpBVpjjSVOlw/HG6ARopyf1dBsaFYanXzfMl0MJv2', 'USER', 'Gartenstraße', '8', '60311', 'Frankfurt', 'Deutschland', NULL),
+(7, 'Michael', 'Weber', 'michael.weber', '$2a$10$089kRT7Qijy.lpBVpjjSVOlw/HG6ARopyf1dBsaFYanXzfMl0MJv2', 'USER', 'Schulstraße', '12', '90402', 'Nürnberg', 'Deutschland', NULL),
+(8, 'Julia', 'Meyer', 'julia.meyer', '$2a$10$089kRT7Qijy.lpBVpjjSVOlw/HG6ARopyf1dBsaFYanXzfMl0MJv2', 'USER', 'Marktplatz', '5', '01067', 'Dresden', 'Deutschland', NULL),
+(9, 'David', 'Richter', 'david.richter', '$2a$10$089kRT7Qijy.lpBVpjjSVOlw/HG6ARopyf1dBsaFYanXzfMl0MJv2', 'USER', 'Lindenstraße', '33', '30159', 'Hannover', 'Deutschland', NULL),
+(10, 'Stefanie', 'Koch', 'stefanie.koch', '$2a$10$089kRT7Qijy.lpBVpjjSVOlw/HG6ARopyf1dBsaFYanXzfMl0MJv2', 'USER', 'Am Stadtpark', '18', '28203', 'Bremen', 'Deutschland', NULL),
+(11, 'Markus', 'Zimmermann', 'markus.zimmermann', '$2a$10$089kRT7Qijy.lpBVpjjSVOlw/HG6ARopyf1dBsaFYanXzfMl0MJv2', 'USER', 'Kastanienallee', '44', '10435', 'Berlin', 'Deutschland', NULL),
+(12, 'Melanie', 'Hoffmann', 'melanie.hoffmann', '$2a$10$089kRT7Qijy.lpBVpjjSVOlw/HG6ARopyf1dBsaFYanXzfMl0MJv2', 'USER', 'Dorfstraße', '2', '49584', 'Fürstenau', 'Deutschland', NULL),
+(13, 'Oliver', 'Neumann', 'oliver.neumann', '$2a$10$089kRT7Qijy.lpBVpjjSVOlw/HG6ARopyf1dBsaFYanXzfMl0MJv2', 'USER', 'Eichenweg', '9', '49074', 'Osnabrück', 'Deutschland', NULL),
+(14, 'Claudia', 'Braun', 'claudia.braun', '$2a$10$089kRT7Qijy.lpBVpjjSVOlw/HG6ARopyf1dBsaFYanXzfMl0MJv2', 'USER', 'Bergstraße', '16', '76131', 'Karlsruhe', 'Deutschland', NULL),
+(15, 'Andreas', 'Krause', 'andreas.krause', '$2a$10$089kRT7Qijy.lpBVpjjSVOlw/HG6ARopyf1dBsaFYanXzfMl0MJv2', 'USER', 'Sonnenstraße', '27', '45127', 'Essen', 'Deutschland', NULL);
 
 -- Sequences anpassen
 ALTER SEQUENCE pizza_seq RESTART WITH 22;
