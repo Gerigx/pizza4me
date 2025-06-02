@@ -6,9 +6,11 @@ import de.hsos.swa.Pizza.Entity.Pizza;
 import de.hsos.swa.Pizza.Entity.PizzaCatalog;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Page;
+import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.List;
 
+@ApplicationScoped
 public class BestellungRepo implements BestellungKatalog, PanacheRepository<Bestellung> {
 
 
