@@ -99,7 +99,7 @@ public class PizzenRessource {
         return RestResponse.ok(pizzaDTOs);        
     }
 
-
+    //Brauchen wir das?
     @POST
     @Retry(maxRetries = 3, delay = 1000)
     @CircuitBreaker(requestVolumeThreshold = 10, failureRatio = 0.5)
