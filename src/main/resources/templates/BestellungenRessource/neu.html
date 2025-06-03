@@ -174,8 +174,18 @@ function updateTotal() {
     document.getElementById('total-price').textContent = totalPrice.toFixed(2) + '€';
 }
 
-// Order Button Click Handler (nur für eingeloggte User)
-document.getElementById('order-btn').addEventListener('click', function() {
+// Order Button Click Handler (echte Bestellung!)
+document.addEventListener('DOMContentLoaded', function() {
+    // Event Listener erst nach DOM-Load hinzufügen
+    const orderBtn = document.getElementById('order-btn');
+    if (orderBtn) {
+        orderBtn.addEventListener('click', function() {
+            createOrder();
+        });
+    }
+});
+
+async function createOrder() {
     if (!isUserLoggedIn) {
         alert('Bitte zuerst anmelden!');
         window.location.href = '/auth/login';
@@ -186,9 +196,101 @@ document.getElementById('order-btn').addEventListener('click', function() {
         alert('Warenkorb ist leer!');
         return;
     }
+
+    // Warenkorb in das richtige Format für den Backend-Request konvertieren
+    const cartRequest = {
+        items: Object.entries(cart).map(([pizzaId, item]) => ({
+            pizzaId: parseInt(pizzaId),
+            quantity: item.count
+        })),
+        hinweis: prompt('Hinweise für die Bestellung (optional):') || ''
+    };
+
+    // Button deaktivieren während Request
+    const orderBtn = document.getElementById('order-btn');
+    orderBtn.disabled = true;
+    orderBtn.textContent = 'Bestellung wird erstellt...';
+
+    try {
+        // POST-Request an Backend
+        const token = localStorage.getItem('authToken');
+        const response = await fetch('/bestellungen', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify(cartRequest)
+        });
+
+        if (response.ok) {
+            // Erfolg!
+            showSuccessMessage();
+            clearCart();
+            
+            // Nach 2 Sekunden zur Bestellübersicht weiterleiten
+            setTimeout(() => {
+                window.location.href = '/bestellungen/meine';
+            }, 2000);
+        } else {
+            // Fehler vom Backend
+            const errorText = await response.text();
+            throw new Error('Bestellung fehlgeschlagen: ' + errorText);
+        }
+    } catch (error) {
+        console.error('Bestellfehler:', error);
+        showErrorMessage(error.message);
+    } finally {
+        // Button wieder aktivieren
+        orderBtn.disabled = Object.keys(cart).length === 0;
+        orderBtn.textContent = 'Bestellung aufgeben';
+    }
+}
+
+function clearCart() {
+    cart = {};
+    updateUI();
+}
+
+function showSuccessMessage() {
+    // Success Alert erstellen
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed';
+    alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 350px;';
+    alertDiv.innerHTML = 
+        '<strong>🎉 Bestellung erfolgreich!</strong><br>' +
+        '<small>Du wirst zur Bestellübersicht weitergeleitet...</small>' +
+        '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
     
-    alert('Bestellung wird implementiert! 🚀\n\nWarenkorb: ' + JSON.stringify(cart, null, 2));
-});
+    document.body.appendChild(alertDiv);
+    
+    // Auto-remove nach 5 Sekunden
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.remove();
+        }
+    }, 5000);
+}
+
+function showErrorMessage(errorMsg) {
+    // Error Alert erstellen
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert alert-danger alert-dismissible fade show position-fixed';
+    alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 350px;';
+    alertDiv.innerHTML = 
+        '<strong>❌ Fehler bei der Bestellung</strong><br>' +
+        '<small>' + errorMsg + '</small>' +
+        '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
+    
+    document.body.appendChild(alertDiv);
+    
+    // Auto-remove nach 5 Sekunden
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.remove();
+        }
+    }, 5000);
+}
 </script>
 
 <style>

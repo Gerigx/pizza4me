@@ -2,6 +2,7 @@ package de.hsos.swa.Bestellungen.Entity;
 
 import de.hsos.swa.Pizza.Entity.Pizza;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
@@ -12,6 +13,7 @@ import java.util.List;
 @Entity
 public class Bestellung {
     @Id
+    @GeneratedValue
     private Long id;
 
     private Long kundeId;

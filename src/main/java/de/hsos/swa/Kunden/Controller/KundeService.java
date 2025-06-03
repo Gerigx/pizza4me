@@ -5,7 +5,9 @@ import java.util.List;
 import de.hsos.swa.Kunden.Entity.Adresse;
 import de.hsos.swa.Kunden.Entity.Kunde;
 import de.hsos.swa.Kunden.Entity.KundeCatalog;
+import de.hsos.swa.shared.Events.BestellungCreatedEvent;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.event.ObservesAsync;
 import jakarta.inject.Inject;
 
 @ApplicationScoped
@@ -13,6 +15,32 @@ public class KundeService implements KundeController{
 
     @Inject
     KundeCatalog kundeCatalog;
+
+        public void onBestellungCreated(@ObservesAsync BestellungCreatedEvent event) {
+        System.out.println("🎉 Async BestellungCreatedEvent empfangen: " + event);
+        
+        try {
+            // Kunde laden
+            Kunde kunde = kundeCatalog.getKunde(event.getKundeId());
+            if (kunde == null) {
+                System.err.println("❌ Kunde mit ID " + event.getKundeId() + " nicht gefunden!");
+                return;
+            }
+
+            // Bestellungs-ID zur orders-Liste hinzufügen
+            kunde.addOrder(event.getBestellungId());
+            
+            // Kunde speichern
+            kundeCatalog.updateKunde(kunde.getId(), kunde);
+            
+            System.out.println("✅ Bestellung " + event.getBestellungId() + 
+                             " zu Kunde " + kunde.getFullName() + " hinzugefügt (async)");
+                             
+        } catch (Exception e) {
+            System.err.println("❌ Fehler beim async Verarbeiten des BestellungCreatedEvent: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public Kunde getKunde(Long id) {
