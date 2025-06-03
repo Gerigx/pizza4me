@@ -1,7 +1,6 @@
 package de.hsos.swa.Bestellungen.Boundry.DTO;
 
 import de.hsos.swa.Bestellungen.Entity.Bestellung;
-import de.hsos.swa.Bestellungen.Entity.BestellungItem;
 import de.hsos.swa.Bestellungen.Entity.Zustand;
 
 import java.math.BigDecimal;

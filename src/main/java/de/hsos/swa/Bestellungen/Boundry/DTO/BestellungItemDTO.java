@@ -6,11 +6,11 @@ import java.math.BigDecimal;
 public class BestellungItemDTO {
     public Long id;
     public Long pizzaId;
-    public String pizzaName;        // Für Display
-    public String pizzaBeschreibung; // Für Display  
+    public String pizzaName;        
+    public String pizzaBeschreibung; 
     public Integer quantity;
-    public String einzelpreis;      // Als String für JSON
-    public String gesamtpreis;      // Als String für JSON
+    public String einzelpreis;      
+    public String gesamtpreis;      
     
     public BestellungItemDTO() {}
     
@@ -37,12 +37,10 @@ public class BestellungItemDTO {
         return dto;
     }
     
-    // DTO zu Entity (für Updates - selten gebraucht)
     public static BestellungItem fromDTO(BestellungItemDTO dto) {
         BestellungItem item = new BestellungItem();
         item.setQuantity(dto.quantity);
         item.setEinzelpreis(new BigDecimal(dto.einzelpreis));
-        // Pizza und Bestellung müssen separat gesetzt werden
         return item;
     }
 }

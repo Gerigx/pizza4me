@@ -3,8 +3,7 @@ package de.hsos.swa.Pizza.Boundary.Ressource;
 import java.net.URI;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
 
 // resillienz
 import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
@@ -39,10 +38,10 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
+
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.WebApplicationException;
+
 import jakarta.ws.rs.core.MediaType;
 
 @Path("/pizzen")
@@ -114,7 +113,7 @@ public class PizzenRessource {
             throw new BadRequestException("Pizza with this name already exists");
         }
 
-        Pizza pizza = pizzaController.createPizza(pizzaDTO.fromDTO(pizzaDTO));
+        Pizza pizza = pizzaController.createPizza(PizzaDTO.fromDTO(pizzaDTO));
         PizzaDTO createdPizza = PizzaDTO.toDTO(pizza);
 
         return RestResponse.created(URI.create("/pizzen/" + createdPizza.id));        

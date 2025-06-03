@@ -1,6 +1,5 @@
 package de.hsos.swa.Bestellungen.Entity;
 
-import de.hsos.swa.Pizza.Entity.Pizza;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;

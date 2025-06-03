@@ -17,7 +17,7 @@ import de.hsos.swa.Kunden.Boundary.DTO.LoginDTO;
 import de.hsos.swa.Kunden.Boundary.DTO.RegistrationDTO;
 import de.hsos.swa.Kunden.Controller.KundeController;
 import de.hsos.swa.Kunden.Entity.Kunde;
-import io.quarkus.elytron.security.common.BcryptUtil;
+
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.Location;
 import io.quarkus.qute.TemplateInstance;
@@ -25,7 +25,7 @@ import io.smallrye.jwt.build.Jwt;
 
 import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
-import jakarta.servlet.http.HttpServletResponse;
+
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.BadRequestException;
@@ -34,7 +34,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.core.Context;
+
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.NewCookie;
 

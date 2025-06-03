@@ -70,7 +70,6 @@ public class BestellungRessource {
             throw new NotFoundException("Bestellung not found for ID: " + id);
         }
 
-        // *** VEREINFACHTES UPDATE (nur Status/Hinweis, keine Items) ***
         existingBestellung.setZustand(de.hsos.swa.Bestellungen.Entity.Zustand.valueOf(bestellungDTO.getZustand()));
         existingBestellung.setHinweis(bestellungDTO.getHinweis());
         

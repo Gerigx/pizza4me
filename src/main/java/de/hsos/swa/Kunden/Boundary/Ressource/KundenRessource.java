@@ -19,7 +19,7 @@ import io.quarkus.qute.TemplateInstance;
 import io.quarkus.resteasy.reactive.links.InjectRestLinks;
 import io.quarkus.resteasy.reactive.links.RestLink;
 import io.quarkus.resteasy.reactive.links.RestLinkType;
-import io.smallrye.common.annotation.Blocking;  
+
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -117,7 +117,4 @@ public class KundenRessource {
 
 
 
-    private boolean isAdmin() {
-        return jwt.getGroups().contains("ADMIN");
-    }
 }

@@ -15,7 +15,7 @@ import de.hsos.swa.Kunden.Entity.Adresse;
 import de.hsos.swa.Kunden.Entity.Kunde;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.Location;
-import io.quarkus.qute.Template;
+
 import io.quarkus.qute.TemplateInstance;
 import io.quarkus.resteasy.reactive.links.RestLink;
 import io.quarkus.security.ForbiddenException;
@@ -32,7 +32,7 @@ import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.QueryParam;
+
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
