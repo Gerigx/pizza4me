@@ -19,7 +19,7 @@ import org.jboss.resteasy.reactive.common.util.RestMediaType;
 
 import java.net.URI;
 
-@Path("/bestellungen/{id}")
+@Path("/bestellung/{id}")
 @Produces({MediaType.APPLICATION_JSON, RestMediaType.APPLICATION_HAL_JSON})
 @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
 @Transactional

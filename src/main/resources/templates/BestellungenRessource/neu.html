@@ -1,0 +1,217 @@
+{#include HomeRessource/base.html}
+{#title}Neue Bestellung - Pizza4Me{/title}
+{#main}
+<div class="row">
+    <!-- Pizza-Auswahl (Links) -->
+    <div class="col-md-8">
+        <h2>🍕 Pizzen auswählen</h2>
+        <p class="text-muted">Wähle deine Lieblingspizzen und füge sie zum Warenkorb hinzu</p>
+        
+        <div class="row">
+            {#for pizza in verfuegbarePizzen}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{pizza.name}</h5>
+                        <p class="card-text text-muted">{pizza.beschreibung}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 text-primary mb-0">{pizza.price}€</span>
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-outline-danger btn-sm" 
+                                        onclick="removePizza({pizza.id})">
+                                    −
+                                </button>
+                                <span class="btn btn-outline-secondary btn-sm" 
+                                      id="count-{pizza.id}">0</span>
+                                <button type="button" class="btn btn-outline-success btn-sm" 
+                                        onclick="addPizza({pizza.id}, '{pizza.name}', {pizza.price})">
+                                    +
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {/for}
+        </div>
+    </div>
+    
+    <!-- Warenkorb (Rechts) -->
+    <div class="col-md-4">
+        <div class="card sticky-top" style="top: 20px;">
+            <div class="card-header">
+                <h5>🛒 Warenkorb</h5>
+            </div>
+            <div class="card-body">
+                <div id="cart-items">
+                    <p class="text-muted text-center">Noch keine Pizzen ausgewählt</p>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between">
+                    <strong>Gesamt:</strong>
+                    <strong id="total-price">0.00€</strong>
+                </div>
+                
+                <!-- Bestellbutton für eingeloggte User -->
+                <div id="logged-in-section" class="d-none">
+                    <button class="btn btn-primary w-100 mt-3" id="order-btn" disabled>
+                        Bestellung aufgeben
+                    </button>
+                </div>
+                
+                <!-- Login-Hinweis für Gäste -->
+                <div id="guest-section" class="mt-3 text-center">
+                    <p class="text-muted small mb-2">Zum Bestellen bitte anmelden</p>
+                    <a href="/auth/login" class="btn btn-outline-primary w-100">
+                        🔐 Jetzt anmelden
+                    </a>
+                    <small class="text-muted d-block mt-2">
+                        Noch kein Account? 
+                        <a href="/auth/register" class="text-decoration-none">Registrieren</a>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Warenkorb-Funktionalität
+let cart = {};
+let totalPrice = 0;
+let isUserLoggedIn = false;
+
+// Check Authentication on Page Load
+document.addEventListener('DOMContentLoaded', function() {
+    checkAuthenticationStatus();
+});
+
+function checkAuthenticationStatus() {
+    const token = localStorage.getItem('authToken');
+    const userInfo = localStorage.getItem('userInfo');
+    
+    if (token && userInfo) {
+        // User ist eingeloggt
+        isUserLoggedIn = true;
+        document.getElementById('logged-in-section').classList.remove('d-none');
+        document.getElementById('guest-section').classList.add('d-none');
+    } else {
+        // User ist nicht eingeloggt
+        isUserLoggedIn = false;
+        document.getElementById('logged-in-section').classList.add('d-none');
+        document.getElementById('guest-section').classList.remove('d-none');
+    }
+}
+
+function addPizza(pizzaId, name, price) {
+    if (!cart[pizzaId]) {
+        cart[pizzaId] = { name, price, count: 0 };
+    }
+    cart[pizzaId].count++;
+    updateUI();
+}
+
+function removePizza(pizzaId) {
+    if (cart[pizzaId] && cart[pizzaId].count > 0) {
+        cart[pizzaId].count--;
+        if (cart[pizzaId].count === 0) {
+            delete cart[pizzaId];
+        }
+        updateUI();
+    }
+}
+
+function updateUI() {
+    // Update Counters
+    Object.keys(cart).forEach(pizzaId => {
+        document.getElementById('count-' + pizzaId).textContent = cart[pizzaId].count;
+    });
+    
+    // Reset counters for removed items
+    document.querySelectorAll('[id^="count-"]').forEach(el => {
+        const pizzaId = el.id.replace('count-', '');
+        if (!cart[pizzaId]) {
+            el.textContent = '0';
+        }
+    });
+    
+    // Update Cart Display
+    updateCartDisplay();
+    
+    // Update Total
+    updateTotal();
+    
+    // Update Order Button (nur wenn eingeloggt)
+    if (isUserLoggedIn) {
+        document.getElementById('order-btn').disabled = Object.keys(cart).length === 0;
+    }
+}
+
+function updateCartDisplay() {
+    const cartItems = document.getElementById('cart-items');
+    
+    if (Object.keys(cart).length === 0) {
+        cartItems.innerHTML = '<p class="text-muted text-center">Noch keine Pizzen ausgewählt</p>';
+        return;
+    }
+    
+    let html = '';
+    Object.entries(cart).forEach(([pizzaId, item]) => {
+        html += '<div class="d-flex justify-content-between align-items-center mb-2">' +
+                '<div>' +
+                '<small class="fw-bold">' + item.name + '</small><br>' +
+                '<small class="text-muted">' + item.count + 'x ' + item.price + '€</small>' +
+                '</div>' +
+                '<small class="fw-bold">' + (item.count * item.price).toFixed(2) + '€</small>' +
+                '</div>';
+    });
+    
+    cartItems.innerHTML = html;
+}
+
+function updateTotal() {
+    totalPrice = Object.values(cart).reduce((sum, item) => sum + (item.count * item.price), 0);
+    document.getElementById('total-price').textContent = totalPrice.toFixed(2) + '€';
+}
+
+// Order Button Click Handler (nur für eingeloggte User)
+document.getElementById('order-btn').addEventListener('click', function() {
+    if (!isUserLoggedIn) {
+        alert('Bitte zuerst anmelden!');
+        window.location.href = '/auth/login';
+        return;
+    }
+    
+    if (Object.keys(cart).length === 0) {
+        alert('Warenkorb ist leer!');
+        return;
+    }
+    
+    alert('Bestellung wird implementiert! 🚀\n\nWarenkorb: ' + JSON.stringify(cart, null, 2));
+});
+</script>
+
+<style>
+.card {
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.btn-group .btn {
+    border-radius: 0;
+}
+
+.btn-group .btn:first-child {
+    border-radius: 0.375rem 0 0 0.375rem;
+}
+
+.btn-group .btn:last-child {
+    border-radius: 0 0.375rem 0.375rem 0;
+}
+</style>
+{/main}
+{/include}

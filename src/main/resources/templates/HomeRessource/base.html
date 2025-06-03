@@ -25,7 +25,10 @@
                     
                     <!-- Admin-only Links -->
                     <a class="nav-link admin-only d-none" href="/kunden">Kunden</a>
-                    <a class="nav-link admin-only d-none" href="/bestellungen">Bestellungen</a>
+                    <a class="nav-link admin-only d-none" href="/bestellungen">📋 Verwaltung</a>
+
+                    
+                    <a class="nav-link" href="/bestellungen/neu">🍕 Bestellen</a>
                 </div>
                 
                 <!-- User Info & Auth Section -->
@@ -157,8 +160,6 @@
         const userInfo = localStorage.getItem('userInfo');
         if (userInfo) {
             const user = JSON.parse(userInfo);
-            // Hier brauchen wir die kundeId aus dem JWT
-            // TODO: kundeId aus JWT Token extrahieren
             window.location.href = '/kunde/' + getCurrentUserId();
         } else {
             window.location.href = '/auth/login';
