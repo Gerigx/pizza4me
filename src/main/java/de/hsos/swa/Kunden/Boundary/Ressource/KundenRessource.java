@@ -19,9 +19,10 @@ import io.quarkus.qute.TemplateInstance;
 import io.quarkus.resteasy.reactive.links.InjectRestLinks;
 import io.quarkus.resteasy.reactive.links.RestLink;
 import io.quarkus.resteasy.reactive.links.RestLinkType;
-import io.quarkus.security.identity.SecurityIdentity;
+import io.smallrye.common.annotation.Blocking;  // ← NEU: Import hinzufügen
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -39,7 +40,9 @@ import jakarta.ws.rs.core.MediaType;
 @Path("/kunden")
 @Produces({MediaType.APPLICATION_JSON, RestMediaType.APPLICATION_HAL_JSON})
 @Consumes(MediaType.APPLICATION_JSON)
+@Transactional
 public class KundenRessource {
+    
     @Inject
     KundeController kundeController;
 
@@ -56,6 +59,7 @@ public class KundenRessource {
     @GET
     @Produces(MediaType.TEXT_HTML)
     @RolesAllowed("ADMIN")  // Nur Admin kann HTML-Liste sehen
+    //@Blocking  // ← NEU: Das löst das Problem!
     public TemplateInstance getAlleKundenHTML(
             @QueryParam("page") @DefaultValue("0") @Min(0) int page,
             @QueryParam("size") @DefaultValue("20") @Min(1) @Max(100) int size
@@ -68,6 +72,7 @@ public class KundenRessource {
     @RestLink(rel = "list")
     @InjectRestLinks(RestLinkType.TYPE)
     @RolesAllowed("ADMIN")  // Nur Admin kann alle Kunden als JSON sehen
+    //@Blocking  // ← NEU: Auch hier hinzufügen!
     public RestResponse<List<KundeDTO>> getAllKunden(
             @QueryParam("page") @DefaultValue("0") @Min(0) int page,
             @QueryParam("size") @DefaultValue("20") @Min(1) @Max(100) int size
@@ -91,6 +96,7 @@ public class KundenRessource {
     @CircuitBreaker(requestVolumeThreshold = 10, failureRatio = 0.5)
     @Timeout(value = 5000)
     @RolesAllowed("ADMIN")  // Nur Admin kann Kunden direkt erstellen (normale User über /auth/register)
+    //@Blocking  // ← NEU: Auch hier!
     public RestResponse<KundeDTO> createKunde(@Valid KundeDTO kundeDTO) {
 
         if (kundeDTO == null) {
@@ -118,6 +124,7 @@ public class KundenRessource {
     @Path("/me")
     @RestLink(rel = "self")
     @RolesAllowed({"USER", "ADMIN"})
+    //@Blocking  // ← NEU: Auch hier!
     public RestResponse<KundeDTO> getMyProfile() {
         
         Long kundeId = getCurrentKundeId();
@@ -145,5 +152,4 @@ public class KundenRessource {
     private boolean isAdmin() {
         return jwt.getGroups().contains("ADMIN");
     }
-
 }

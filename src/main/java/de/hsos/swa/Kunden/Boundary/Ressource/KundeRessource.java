@@ -32,9 +32,11 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import org.jboss.resteasy.reactive.common.util.RestMediaType;
 
+import jakarta.servlet.http.HttpServletRequest;
 
 
 @Path("/kunde/{id}")
@@ -48,6 +50,9 @@ public class KundeRessource {
 
     @Inject
     JsonWebToken jwt;
+
+    @Context
+    HttpServletRequest request;
 
     // HTML Template für einzelnen Kunden
     @CheckedTemplate

@@ -1,47 +1,97 @@
 {#include HomeRessource/base.html}
-{#title}Login - Pizza4Me{/title}
+{#title}Anmelden - Pizza4Me{/title}
 {#main}
 <div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-body">
-                <h3 class="card-title text-center mb-4">🍕 Pizza4Me Login</h3>
-                
+    <div class="col-md-6 col-lg-4">
+        <div class="card shadow">
+            <div class="card-body p-5">
+                <!-- Header -->
+                <div class="text-center mb-4">
+                    <h2 class="card-title">🍕 Anmelden</h2>
+                    <p class="text-muted">Willkommen zurück bei Pizza4Me!</p>
+                </div>
 
-                
-                <!-- HTML-Form für Session-Login -->
-                <form action="/auth/login-form" method="POST">
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Username:</label>
-                        <input type="text" class="form-control" id="username" name="username" 
-                               value="admin" required>
+                <!-- Alert für Messages -->
+                <div id="alertContainer" class="d-none">
+                    <div id="alertBox" class="alert" role="alert">
+                        <span id="alertMessage"></span>
                     </div>
+                </div>
+
+                <!-- Login Form -->
+                <form id="loginForm">
                     <div class="mb-3">
-                        <label for="password" class="form-label">Password:</label>
-                        <input type="password" class="form-control" id="password" name="password" 
-                               value="password123" required>
+                        <label for="username" class="form-label">
+                            <i class="text-primary">👤</i> Benutzername
+                        </label>
+                        <input type="text" 
+                               class="form-control form-control-lg" 
+                               id="username" 
+                               name="username" 
+                               placeholder="Dein Benutzername"
+                               value="admin"
+                               required>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100">Login</button>
+
+                    <div class="mb-4">
+                        <label for="password" class="form-label">
+                            <i class="text-primary">🔒</i> Passwort
+                        </label>
+                        <input type="password" 
+                               class="form-control form-control-lg" 
+                               id="password" 
+                               name="password" 
+                               placeholder="Dein Passwort"
+                               value="password123"
+                               required>
+                    </div>
+
+                    <!-- Login Button -->
+                    <button type="submit" 
+                            class="btn btn-primary btn-lg w-100 mb-3" 
+                            id="loginBtn">
+                        <span id="loginBtnText">🚀 Anmelden</span>
+                        <span id="loginSpinner" class="d-none">
+                            <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                            Anmeldung läuft...
+                        </span>
+                    </button>
                 </form>
-                
+
+                <!-- Links -->
+                <div class="text-center">
+                    <p class="text-muted mb-2">Noch kein Account?</p>
+                    <a href="/auth/register" class="btn btn-outline-secondary">
+                        📝 Jetzt registrieren
+                    </a>
+                </div>
+
+                <!-- Test Accounts -->
                 <hr class="my-4">
-                
-                <!-- JavaScript-Login für API-Testing -->
-                <h5>API-Login (für Entwicklung):</h5>
-                <button class="btn btn-outline-info w-100" onclick="apiLogin()">
-                    🔧 Login via JavaScript/API
-                </button>
-                
-                <div id="apiResult" class="mt-3"></div>
-                
-                <hr class="my-4">
-                
-                <div class="text-muted text-center">
-                    <h6>Test-Accounts:</h6>
-                    <small>
-                        <strong>Admin:</strong> admin / password123<br>
-                        <strong>User:</strong> anna.schmidt / password123
+                <div class="text-center">
+                    <small class="text-muted">
+                        <strong>Test-Accounts:</strong><br>
+                        👑 <strong>Admin:</strong> admin / password123<br>
+                        👤 <strong>User:</strong> anna.schmidt / password123
                     </small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Development Info -->
+        <div class="card mt-3 bg-light">
+            <div class="card-body p-3">
+                <h6 class="card-title">🔧 Entwickler-Tools</h6>
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-info btn-sm" onclick="quickLogin('admin')">
+                        ⚡ Quick-Login als Admin
+                    </button>
+                    <button class="btn btn-outline-info btn-sm" onclick="quickLogin('anna.schmidt')">
+                        ⚡ Quick-Login als User
+                    </button>
+                    <button class="btn btn-outline-warning btn-sm" onclick="showTokenInfo()">
+                        🔍 Token-Info anzeigen
+                    </button>
                 </div>
             </div>
         </div>
@@ -49,45 +99,180 @@
 </div>
 
 <script>
-async function apiLogin() {
+// Login Form Handler
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
+    
+    await performLogin(username, password);
+});
+
+// Main Login Function
+async function performLogin(username, password) {
+    showLoading(true);
+    hideAlert();
     
     try {
         const response = await fetch('/auth/login', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify({ username, password })
         });
         
         if (response.ok) {
             const data = await response.json();
-            localStorage.setItem('token', data.token);
             
-            document.getElementById('apiResult').innerHTML = `
-                <div class="alert alert-success">
-                    <strong>✅ API-Login erfolgreich!</strong><br>
-                    <strong>User:</strong> ${data.kunde.vorname} ${data.kunde.nachname}<br>
-                    <strong>Rolle:</strong> ${data.role}<br>
-                    <small>Token im localStorage gespeichert</small>
-                </div>
-            `;
+            // Optional: JWT auch in localStorage für API-Calls speichern
+            localStorage.setItem('authToken', data.token);
+            localStorage.setItem('userInfo', JSON.stringify({
+                name: data.kunde.vorname + ' ' + data.kunde.nachname,
+                role: data.role,
+                username: data.kunde.username || username
+            }));
+            
+            showAlert('success', '🎉 Erfolgreich angemeldet als ' + data.kunde.vorname + '!');
+            
+            // Redirect nach 1.5 Sekunden
+            setTimeout(() => {
+                // Redirect zur Hauptseite oder zurück woher der User kam
+                const returnUrl = new URLSearchParams(window.location.search).get('returnUrl') || '/';
+                window.location.href = returnUrl;
+            }, 1500);
+            
         } else {
-            const error = await response.json();
-            document.getElementById('apiResult').innerHTML = `
-                <div class="alert alert-danger">
-                    <strong>❌ API-Login fehlgeschlagen:</strong> ${error.message || 'Unbekannter Fehler'}
-                </div>
-            `;
+            const errorData = await response.json().catch(() => ({ message: 'Unbekannter Fehler' }));
+            showAlert('danger', '❌ Anmeldung fehlgeschlagen: ' + errorData.message);
         }
-    } catch (err) {
-        document.getElementById('apiResult').innerHTML = `
-            <div class="alert alert-danger">
-                <strong>❌ Fehler:</strong> ${err.message}
-            </div>
-        `;
+        
+    } catch (error) {
+        console.error('Login error:', error);
+        showAlert('danger', '❌ Verbindungsfehler. Bitte versuche es erneut.');
+    } finally {
+        showLoading(false);
     }
 }
+
+// Quick Login für Development
+async function quickLogin(username) {
+    const passwords = {
+        'admin': 'password123',
+        'anna.schmidt': 'password123'
+    };
+    
+    document.getElementById('username').value = username;
+    document.getElementById('password').value = passwords[username] || 'password123';
+    
+    await performLogin(username, passwords[username] || 'password123');
+}
+
+// UI Helper Functions
+function showLoading(loading) {
+    const btn = document.getElementById('loginBtn');
+    const btnText = document.getElementById('loginBtnText');
+    const spinner = document.getElementById('loginSpinner');
+    
+    if (loading) {
+        btn.disabled = true;
+        btnText.classList.add('d-none');
+        spinner.classList.remove('d-none');
+    } else {
+        btn.disabled = false;
+        btnText.classList.remove('d-none');
+        spinner.classList.add('d-none');
+    }
+}
+
+function showAlert(type, message) {
+    const container = document.getElementById('alertContainer');
+    const box = document.getElementById('alertBox');
+    const messageEl = document.getElementById('alertMessage');
+    
+    container.classList.remove('d-none');
+    box.className = 'alert alert-' + type;
+    messageEl.textContent = message;
+    
+    // Auto-hide success messages
+    if (type === 'success') {
+        setTimeout(hideAlert, 3000);
+    }
+}
+
+function hideAlert() {
+    document.getElementById('alertContainer').classList.add('d-none');
+}
+
+// Token Info (Development)
+function showTokenInfo() {
+    const token = localStorage.getItem('authToken');
+    const userInfo = localStorage.getItem('userInfo');
+    
+    if (token) {
+        console.log('🔑 Current Token:', token);
+        console.log('👤 User Info:', JSON.parse(userInfo || '{}'));
+        showAlert('info', '🔍 Token-Info in der Browser-Console ausgegeben');
+    } else {
+        showAlert('warning', '⚠️ Kein Token gefunden. Bitte erst anmelden.');
+    }
+}
+
+// Check if user is already logged in
+document.addEventListener('DOMContentLoaded', function() {
+    const token = localStorage.getItem('authToken');
+    const userInfo = localStorage.getItem('userInfo');
+    
+    if (token && userInfo) {
+        const user = JSON.parse(userInfo);
+        showAlert('info', 'ℹ️ Du bist bereits als ' + user.name + ' angemeldet.');
+    }
+});
 </script>
+
+<style>
+/* Custom Styles */
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.btn-primary {
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
+}
+
+#alertContainer .alert {
+    border-radius: 10px;
+    border: none;
+}
+
+/* Animation für das Erscheinen */
+.card {
+    animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
 {/main}
 {/include}
