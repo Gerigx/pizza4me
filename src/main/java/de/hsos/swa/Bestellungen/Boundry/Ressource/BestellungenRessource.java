@@ -4,6 +4,7 @@ import de.hsos.swa.Bestellungen.Boundry.DTO.BestellungDTO;
 import de.hsos.swa.Bestellungen.Boundry.DTO.CartItemDTO;
 import de.hsos.swa.Bestellungen.Boundry.DTO.CartRequestDTO;
 import de.hsos.swa.Bestellungen.Entity.Bestellung;
+import de.hsos.swa.Bestellungen.Entity.BestellungItem;
 import de.hsos.swa.Bestellungen.Entity.BestellungKatalog;
 import de.hsos.swa.Bestellungen.Entity.Zustand;
 import de.hsos.swa.Pizza.Controller.PizzaController;
@@ -38,6 +39,7 @@ import java.util.List;
 @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_FORM_URLENCODED})
 @Transactional
 public class BestellungenRessource {
+    
     @Inject
     BestellungKatalog bestellungKatalog;
 
@@ -53,10 +55,10 @@ public class BestellungenRessource {
     @CheckedTemplate
     public static class Templates {
         @Location("BestellungenRessource/list")
-        public static native TemplateInstance list(List<BestellungDTO> bestellungen); // Parameter hinzufügen
+        public static native TemplateInstance list(List<BestellungDTO> bestellungen);
 
         @Location("BestellungenRessource/neu") 
-        public static native TemplateInstance neu(List<Pizza> verfuegbarePizzen); // ← Parameter hinzufügen
+        public static native TemplateInstance neu(List<Pizza> verfuegbarePizzen);
     }
 
     @GET
@@ -65,26 +67,23 @@ public class BestellungenRessource {
                                                 @QueryParam("size") @DefaultValue("10") int size) {
         List<Bestellung> bestellungen = bestellungKatalog.getAllBestellungen(page, size);
         
-        // Daten verarbeiten UND speichern
         List<BestellungDTO> bestellungDTOs = bestellungen.stream()
                 .sorted()
                 .map(BestellungDTO::toDTO)
                 .toList();
         
-        // Parameter an Template übergeben
-        return BestellungenRessource.Templates.list(bestellungDTOs); // oder bestellungen
+        return BestellungenRessource.Templates.list(bestellungDTOs);
     }
 
     @GET
     @Path("/neu")
     @Produces(MediaType.TEXT_HTML)
     public TemplateInstance neueBestellungHTML() {
-        // Alle Pizzen für die Auswahl laden
-        List<Pizza> verfuegbarePizzen = pizzaController.getAllPizzas(0, 100); // Alle Pizzen laden
-        
+        List<Pizza> verfuegbarePizzen = pizzaController.getAllPizzas(0, 100);
         return BestellungenRessource.Templates.neu(verfuegbarePizzen);
     }
 
+    // debugs per ai
     @POST
     @RolesAllowed({"USER", "ADMIN"})
     @Retry(maxRetries = 3, delay = 1000)
@@ -95,47 +94,53 @@ public class BestellungenRessource {
             throw new BadRequestException("Warenkorb ist leer");
         }
 
-        // Kunde ID aus JWT Token holen
         Long kundeId = getCurrentKundeId();
         if (kundeId == null) {
             throw new BadRequestException("Kunde ID nicht im Token gefunden");
         }
 
-        // Pizzen laden und validieren
-        List<Pizza> bestelltePizzen = new ArrayList<>();
+        List<BestellungItem> bestellungItems = new ArrayList<>();
         BigDecimal gesamtPreis = BigDecimal.ZERO;
 
-        for (CartItemDTO item : cartRequest.items) {
-            Pizza pizza = pizzaController.getPizza(item.pizzaId);
+        Bestellung bestellung = new Bestellung();
+        bestellung.setKundeId(kundeId);
+        bestellung.setZustand(Zustand.Neu);
+        bestellung.setHinweis(cartRequest.hinweis != null ? cartRequest.hinweis : "");
+        bestellung.setBestellDatum(new Timestamp(System.currentTimeMillis()));
+
+        for (CartItemDTO cartItem : cartRequest.items) {
+            Pizza pizza = pizzaController.getPizza(cartItem.pizzaId);
             if (pizza == null) {
-                throw new BadRequestException("Pizza mit ID " + item.pizzaId + " nicht gefunden");
+                throw new BadRequestException("Pizza mit ID " + cartItem.pizzaId + " nicht gefunden");
             }
 
-            // Mehrere Kopien der Pizza für die Anzahl hinzufügen
-            for (int i = 0; i < item.quantity; i++) {
-                bestelltePizzen.add(pizza);
+            if (cartItem.quantity <= 0) {
+                throw new BadRequestException("Quantity muss größer als 0 sein");
             }
 
-            // Preis berechnen
-            BigDecimal itemPreis = pizza.getPrice().multiply(new BigDecimal(item.quantity));
-            gesamtPreis = gesamtPreis.add(itemPreis);
+            BestellungItem bestellungItem = BestellungItem.create(bestellung, pizza, cartItem.quantity);
+            bestellungItems.add(bestellungItem);
+
+            gesamtPreis = gesamtPreis.add(bestellungItem.getGesamtpreis());
+
+            System.out.println("🍕 BestellungItem erstellt: " + pizza.getName() + 
+                              " x" + cartItem.quantity + 
+                              " = " + bestellungItem.getGesamtpreis() + "€");
         }
 
-        // BestellungDTO erstellen (nutzt dein existierendes DTO!)
-        BestellungDTO bestellungDTO = new BestellungDTO(
-            kundeId,
-            Zustand.Neu.name(),
-            cartRequest.hinweis != null ? cartRequest.hinweis : "",
-            new Timestamp(System.currentTimeMillis()).toString(),
-            gesamtPreis.toString(),
-            bestelltePizzen
-        );
+        for (BestellungItem item : bestellungItems) {
+            bestellung.addBestellungItem(item);
+        }
 
-        // Zu Bestellung Entity konvertieren und speichern
-        Bestellung bestellung = BestellungDTO.fromDTO(bestellungDTO);
+
+        bestellung.setGesamtPreis(gesamtPreis);
+
+        System.out.println("💰 Bestellung Gesamtpreis: " + gesamtPreis + "€");
+
         Bestellung gespeicherteBestellung = bestellungKatalog.createBestellung(bestellung);
         
-        // *** EVENT FEUERN (ASYNC) ***
+        System.out.println("✅ Bestellung gespeichert mit ID: " + gespeicherteBestellung.getId());
+
         bestellungCreatedEvent.fireAsync(new BestellungCreatedEvent(
             gespeicherteBestellung.getId(), 
             kundeId
@@ -144,13 +149,10 @@ public class BestellungenRessource {
         System.out.println("🚀 BestellungCreatedEvent gefeuert: ID=" + gespeicherteBestellung.getId() + 
                           ", KundeId=" + kundeId);
         
-        // Zurück zu DTO konvertieren für Response
         BestellungDTO responseDTO = BestellungDTO.toDTO(gespeicherteBestellung);
 
         return RestResponse.created(URI.create("/bestellung/" + gespeicherteBestellung.getId()));
     }
-
-
 
     private Long getCurrentKundeId() {
         try {
@@ -164,5 +166,4 @@ public class BestellungenRessource {
             return null;
         }
     }
-
 }

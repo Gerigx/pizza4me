@@ -56,7 +56,7 @@ public class KundeRessource {
     @Context
     HttpServletRequest request;
 
-    // HTML Template für einzelnen Kunden
+
     @CheckedTemplate
     public static class Templates {
         @Location("KundeRessource/detail")
@@ -116,7 +116,6 @@ public class KundeRessource {
             throw new NotFoundException("Kunde mit ID " + id + " nicht gefunden");
         }
 
-        // Nur Business-Daten updaten (wie bei deiner Pizza, aber sicherer)
         KundeDTO.updateEntity(existingKunde, kundeDTO);
 
         Kunde updatedKunde = kundeController.updateKunde(id, existingKunde);
@@ -129,7 +128,7 @@ public class KundeRessource {
     @Retry(maxRetries = 3, delay = 1000)
     @CircuitBreaker(requestVolumeThreshold = 10, failureRatio = 0.5)
     @Timeout(value = 5000)
-    @RolesAllowed("ADMIN")  // Nur Admin kann Kunden löschen
+    @RolesAllowed("ADMIN")  
     public RestResponse<Void> deleteKunde(@PathParam("id") Long id) {
         
         Kunde existingKunde = kundeController.getKunde(id);
@@ -142,7 +141,6 @@ public class KundeRessource {
         return RestResponse.noContent();
     }
 
-    // Adresse-spezifische Endpoints (wie Sub-Resources)
     @GET
     @Path("/adresse")
     @RolesAllowed({"USER", "ADMIN"})
@@ -209,60 +207,58 @@ public class KundeRessource {
         return RestResponse.noContent();
     }
 
-private boolean canAccessKunde(Long kundeId) {
-    System.out.println("🔍 canAccessKunde() Debug:");
-    System.out.println("  - Requested kundeId: " + kundeId);
-    
-    // Admin kann alles
-    boolean admin = isAdmin();
-    System.out.println("  - isAdmin(): " + admin);
-    
-    if (admin) {
-        System.out.println("  - ✅ Admin access granted");
-        return true;
-    }
-    
-    // User kann nur eigene Daten
-    Long currentKundeId = getCurrentKundeId();
-    System.out.println("  - getCurrentKundeId(): " + currentKundeId);
-    System.out.println("  - kundeId.equals(): " + (currentKundeId != null && currentKundeId.equals(kundeId)));
-    
-    return currentKundeId != null && currentKundeId.equals(kundeId);
-}
-
-private Long getCurrentKundeId() {
-    try {
-        Object kundeIdClaim = jwt.getClaim("kundeId");
-        System.out.println("  - JWT kundeId claim type: " + kundeIdClaim.getClass().getName());
-        System.out.println("  - JWT kundeId claim value: " + kundeIdClaim);
+    // debugs von ai
+    private boolean canAccessKunde(Long kundeId) {
+        System.out.println("🔍 canAccessKunde() Debug:");
+        System.out.println("  - Requested kundeId: " + kundeId);
         
-        // Simple toString() + parse approach
-        if (kundeIdClaim != null) {
-            String valueStr = kundeIdClaim.toString();
-            System.out.println("  - Converting string: " + valueStr);
-            return Long.parseLong(valueStr);
+        boolean admin = isAdmin();
+        System.out.println("  - isAdmin(): " + admin);
+        
+        if (admin) {
+            System.out.println("  - ✅ Admin access granted");
+            return true;
         }
         
-        System.out.println("  - kundeId claim is null");
-        return null;
-    } catch (Exception e) {
-        System.out.println("  - JWT ERROR: " + e.getMessage());
-        e.printStackTrace();
-        return null;
+        Long currentKundeId = getCurrentKundeId();
+        System.out.println("  - getCurrentKundeId(): " + currentKundeId);
+        System.out.println("  - kundeId.equals(): " + (currentKundeId != null && currentKundeId.equals(kundeId)));
+        
+        return currentKundeId != null && currentKundeId.equals(kundeId);
     }
-}
 
-private boolean isAdmin() {
-    try {
-        Set<String> groups = jwt.getGroups();
-        System.out.println("  - JWT groups: " + groups);
-        boolean admin = groups.contains("ADMIN");
-        System.out.println("  - contains ADMIN: " + admin);
-        return admin;
-    } catch (Exception e) {
-        System.out.println("  - Groups ERROR: " + e.getMessage());
-        return false;
+    private Long getCurrentKundeId() {
+        try {
+            Object kundeIdClaim = jwt.getClaim("kundeId");
+            System.out.println("  - JWT kundeId claim type: " + kundeIdClaim.getClass().getName());
+            System.out.println("  - JWT kundeId claim value: " + kundeIdClaim);
+            
+            if (kundeIdClaim != null) {
+                String valueStr = kundeIdClaim.toString();
+                System.out.println("  - Converting string: " + valueStr);
+                return Long.parseLong(valueStr);
+            }
+            
+            System.out.println("  - kundeId claim is null");
+            return null;
+        } catch (Exception e) {
+            System.out.println("  - JWT ERROR: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
     }
-}
+
+    private boolean isAdmin() {
+        try {
+            Set<String> groups = jwt.getGroups();
+            System.out.println("  - JWT groups: " + groups);
+            boolean admin = groups.contains("ADMIN");
+            System.out.println("  - contains ADMIN: " + admin);
+            return admin;
+        } catch (Exception e) {
+            System.out.println("  - Groups ERROR: " + e.getMessage());
+            return false;
+        }
+    }
 
 }

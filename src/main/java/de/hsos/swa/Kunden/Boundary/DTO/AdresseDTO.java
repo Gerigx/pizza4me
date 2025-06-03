@@ -25,16 +25,15 @@ public class AdresseDTO {
     @Size(max = 50, message = "Land zu lang")
     public String land = "Deutschland";
 
-    // Korrigiertes Mapping - jetzt passend zu deiner Adresse.java
     public static AdresseDTO toDTO(Adresse adresse) {
         if (adresse == null) return null;
         
         AdresseDTO adresseDTO = new AdresseDTO();
-        adresseDTO.strasse = adresse.getStrasse();      // ✅ Jetzt richtig
-        adresseDTO.hausnummer = adresse.getHausnummer(); // ✅ War vergessen
-        adresseDTO.plz = adresse.getPlz();              // ✅ Jetzt richtig
-        adresseDTO.ort = adresse.getOrt();              // ✅ Jetzt richtig
-        adresseDTO.land = adresse.getLand();            // ✅ Jetzt richtig
+        adresseDTO.strasse = adresse.getStrasse();     
+        adresseDTO.hausnummer = adresse.getHausnummer(); 
+        adresseDTO.plz = adresse.getPlz();  
+        adresseDTO.ort = adresse.getOrt();       
+        adresseDTO.land = adresse.getLand();       
         return adresseDTO;
     }
 
@@ -43,7 +42,7 @@ public class AdresseDTO {
         
         Adresse adresse = new Adresse();
         adresse.setStrasse(adresseDTO.strasse);
-        adresse.setHausnummer(adresseDTO.hausnummer);   // ✅ War vergessen
+        adresse.setHausnummer(adresseDTO.hausnummer);  
         adresse.setPlz(adresseDTO.plz);
         adresse.setOrt(adresseDTO.ort);
         adresse.setLand(adresseDTO.land != null ? adresseDTO.land : "Deutschland");

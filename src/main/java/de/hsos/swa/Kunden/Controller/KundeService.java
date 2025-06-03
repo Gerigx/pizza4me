@@ -16,21 +16,18 @@ public class KundeService implements KundeController{
     @Inject
     KundeCatalog kundeCatalog;
 
-        public void onBestellungCreated(@ObservesAsync BestellungCreatedEvent event) {
-        System.out.println("🎉 Async BestellungCreatedEvent empfangen: " + event);
+    // ausgaben von ai verschönert
+    public void onBestellungCreated(@ObservesAsync BestellungCreatedEvent event) {
         
         try {
-            // Kunde laden
             Kunde kunde = kundeCatalog.getKunde(event.getKundeId());
             if (kunde == null) {
                 System.err.println("❌ Kunde mit ID " + event.getKundeId() + " nicht gefunden!");
                 return;
             }
 
-            // Bestellungs-ID zur orders-Liste hinzufügen
             kunde.addOrder(event.getBestellungId());
             
-            // Kunde speichern
             kundeCatalog.updateKunde(kunde.getId(), kunde);
             
             System.out.println("✅ Bestellung " + event.getBestellungId() + 

@@ -34,8 +34,6 @@ public class BestellungRessource {
         public static native TemplateInstance detail(long id);
         @Location("BestellungRessource/edit")
         public static native TemplateInstance edit(long id);
-        @Location("BestellungRessource/create")
-        public static native TemplateInstance create();
     }
 
     @GET
@@ -66,13 +64,17 @@ public class BestellungRessource {
         if (bestellungDTO == null || !bestellungKatalog.isExisting(id)) {
             throw new BadRequestException("Invalid Bestellung data or ID does not exist.");
         }
+        
         Bestellung existingBestellung = bestellungKatalog.getBestellung(id);
         if (existingBestellung == null) {
             throw new NotFoundException("Bestellung not found for ID: " + id);
         }
 
-        Bestellung updatedBestellung = bestellungKatalog.updateBestellung(id, BestellungDTO.fromDTO(bestellungDTO));
-        BestellungDTO updatedBestellungDTO = BestellungDTO.toDTO(updatedBestellung);
+        // *** VEREINFACHTES UPDATE (nur Status/Hinweis, keine Items) ***
+        existingBestellung.setZustand(de.hsos.swa.Bestellungen.Entity.Zustand.valueOf(bestellungDTO.getZustand()));
+        existingBestellung.setHinweis(bestellungDTO.getHinweis());
+        
+        Bestellung updatedBestellung = bestellungKatalog.updateBestellung(id, existingBestellung);
 
         return Response.seeOther(URI.create("/bestellungen")).build();
     }
@@ -82,7 +84,6 @@ public class BestellungRessource {
     @Timeout(value = 2000)
     public RestResponse deleteBestellung(@PathParam("id") Long id) {
 
-        Bestellung existingBestellung = bestellungKatalog.getBestellung(id);
         if (!bestellungKatalog.isExisting(id)) {
             throw new NotFoundException("Bestellung not found for ID: " + id);
         }
@@ -90,5 +91,4 @@ public class BestellungRessource {
         bestellungKatalog.deleteBestellung(id);
         return RestResponse.noContent();
     }
-
 }

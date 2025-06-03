@@ -2,7 +2,7 @@ package de.hsos.swa.Kunden.Boundary.DTO;
 
 public class AuthResponseDTO {
     public String token;
-    public KundeDTO kunde;  // Standard DTO ohne Security-Felder
+    public KundeDTO kunde;  
     public String role;
     public long expiresAt;
 

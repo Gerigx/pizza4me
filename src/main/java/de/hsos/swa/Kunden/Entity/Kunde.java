@@ -73,7 +73,7 @@ public class Kunde {
     @NotBlank(message = "Role darf nicht leer sein")
     private String role;
 
-    // Konstruktoren
+
     public Kunde() {
     }
 
@@ -85,7 +85,6 @@ public class Kunde {
         this.role = role;
     }
 
-    // Utility Methoden für User Management
     public static Kunde createNewKunde(String vorname, String nachname, String username, String password, String role) {
         return new Kunde(vorname, nachname, username, password, role);
     }
@@ -105,7 +104,7 @@ public class Kunde {
         return this.role != null && Objects.equals(this.role, roleName);
     }
 
-    // Getter und Setter
+    // getset
     public Long getId() {
         return id;
     }
@@ -154,13 +153,12 @@ public class Kunde {
         this.username = username;
     }
 
-    // Kein Getter für Password aus Security-Gründen!
     public void setPassword(String password) {
         this.password = BcryptUtil.bcryptHash(password);
     }
 
+    // todo: remove debug
     public boolean verifyPassword(String password) {
-    // TESTCODE: Frischen Hash erstellen und sofort prüfen
         if (password.equals("password123")) {
             String testHash = BcryptUtil.bcryptHash(password);
             boolean selfTest = BcryptUtil.matches(password, testHash);
@@ -182,7 +180,6 @@ public class Kunde {
         this.role = role;
     }
 
-    // equals und hashCode basierend auf username (unique identifier)
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

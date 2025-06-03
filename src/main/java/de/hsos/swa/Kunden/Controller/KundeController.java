@@ -24,7 +24,8 @@ public interface KundeController {
 
     public Kunde findByUsername(String username);
     
-    // Wie dein existsByName für Pizza
+
+    
     public boolean existsByUsername(String username);
 
 }

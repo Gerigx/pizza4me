@@ -19,7 +19,7 @@ import io.quarkus.qute.TemplateInstance;
 import io.quarkus.resteasy.reactive.links.InjectRestLinks;
 import io.quarkus.resteasy.reactive.links.RestLink;
 import io.quarkus.resteasy.reactive.links.RestLinkType;
-import io.smallrye.common.annotation.Blocking;  // ← NEU: Import hinzufügen
+import io.smallrye.common.annotation.Blocking;  
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -49,7 +49,6 @@ public class KundenRessource {
     @Inject
     JsonWebToken jwt;
 
-    // HTML Templates (wie bei deiner Pizza)
     @CheckedTemplate
     public static class Templates {
         @Location("KundenRessource/list")
@@ -58,8 +57,7 @@ public class KundenRessource {
 
     @GET
     @Produces(MediaType.TEXT_HTML)
-    @RolesAllowed("ADMIN")  // Nur Admin kann HTML-Liste sehen
-    //@Blocking  // ← NEU: Das löst das Problem!
+    @RolesAllowed("ADMIN")  
     public TemplateInstance getAlleKundenHTML(
             @QueryParam("page") @DefaultValue("0") @Min(0) int page,
             @QueryParam("size") @DefaultValue("20") @Min(1) @Max(100) int size
@@ -71,8 +69,7 @@ public class KundenRessource {
     @GET
     @RestLink(rel = "list")
     @InjectRestLinks(RestLinkType.TYPE)
-    @RolesAllowed("ADMIN")  // Nur Admin kann alle Kunden als JSON sehen
-    //@Blocking  // ← NEU: Auch hier hinzufügen!
+    @RolesAllowed("ADMIN") 
     public RestResponse<List<KundeDTO>> getAllKunden(
             @QueryParam("page") @DefaultValue("0") @Min(0) int page,
             @QueryParam("size") @DefaultValue("20") @Min(1) @Max(100) int size
@@ -85,7 +82,7 @@ public class KundenRessource {
         }
 
         List<KundeDTO> kundenDTOs = kunden.stream()
-            .map(KundeDTO::toDTO)  // Wie dein PizzaDTO.toDTO()
+            .map(KundeDTO::toDTO)  
             .toList();
 
         return RestResponse.ok(kundenDTOs);
@@ -95,19 +92,17 @@ public class KundenRessource {
     @Retry(maxRetries = 3, delay = 1000)
     @CircuitBreaker(requestVolumeThreshold = 10, failureRatio = 0.5)
     @Timeout(value = 5000)
-    @RolesAllowed("ADMIN")  // Nur Admin kann Kunden direkt erstellen (normale User über /auth/register)
-    //@Blocking  // ← NEU: Auch hier!
+    @RolesAllowed("ADMIN") 
     public RestResponse<KundeDTO> createKunde(@Valid KundeDTO kundeDTO) {
 
         if (kundeDTO == null) {
             throw new BadRequestException("Request body cannot be null");
         }
 
-        // Für Admin-erstellte Kunden: Default-Werte setzen
         Kunde kunde = KundeDTO.fromDTO(kundeDTO);
-        kunde.setUsername("admin_created_" + System.currentTimeMillis()); // Temporary username
-        kunde.setPassword("temp_password"); // Muss später geändert werden
-        kunde.setRole("USER"); // Default role
+        kunde.setUsername("admin_created_" + System.currentTimeMillis()); 
+        kunde.setPassword("temp_password"); 
+        kunde.setRole("USER"); 
 
         if (kundeController.existsByUsername(kunde.getUsername())) {
             throw new BadRequestException("Kunde mit diesem Username existiert bereits");

@@ -19,7 +19,6 @@ public class KundeDTO {
     @Valid
     public AdresseDTO adresse;
 
-    // Wie dein PizzaDTO.fromDTO() - Entity zu DTO
     public static KundeDTO toDTO(Kunde kunde) {
         KundeDTO kundeDTO = new KundeDTO();
         kundeDTO.id = kunde.getId();
@@ -33,7 +32,6 @@ public class KundeDTO {
         return kundeDTO;
     }
 
-    // Wie dein PizzaDTO.fromDTO() - DTO zu Entity (für neue Entities)
     public static Kunde fromDTO(KundeDTO kundeDTO) {
         Kunde kunde = new Kunde();
         kunde.setVorname(kundeDTO.vorname);
@@ -46,7 +44,6 @@ public class KundeDTO {
         return kunde;
     }
 
-    // Für Updates - bestehende Entity aktualisieren
     public static void updateEntity(Kunde kunde, KundeDTO kundeDTO) {
         if (kundeDTO.vorname != null) {
             kunde.setVorname(kundeDTO.vorname);

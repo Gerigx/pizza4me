@@ -48,7 +48,6 @@ public class AuthRessource {
     @Inject
     KundeController kundeController;
 
-    // Und das Template definieren:
     @CheckedTemplate
     public static class Templates {
         @Location("AuthRessource/login")
@@ -90,7 +89,6 @@ public class AuthRessource {
         System.out.println("Test2");
 
         try {
-            // User laden 
             Kunde kunde = kundeController.findByUsername(loginDTO.username);
             if (kunde == null) {
                 throw new BadRequestException("Ungültige Anmeldedaten");
@@ -98,14 +96,12 @@ public class AuthRessource {
 
             System.out.println("Test3");
 
-            // Password prüfen
             if (!kunde.verifyPassword(loginDTO.password)) {
                 throw new BadRequestException("Ungültige Anmeldedaten");
             }
 
             System.out.println("Test4");
 
-            // JWT Token erstellen
             String token = createJwtToken(kunde);
             long expiresAt = Instant.now().plus(Duration.ofHours(24)).getEpochSecond();
 
@@ -118,7 +114,7 @@ public class AuthRessource {
 
             System.out.println("Test5");
 
-            // ← MODERNE COOKIE-LÖSUNG
+            // FRAGE SOLL das projekt in production laufen?
             NewCookie jwtCookie = new NewCookie.Builder("jwt")
                 .value(token)
                 .path("/")
@@ -138,7 +134,7 @@ public class AuthRessource {
         } catch (Exception e) {
             System.out.println("Test7 - Exception: " + e.getClass().getName());
             System.out.println("Test7 - Message: " + e.getMessage());
-            e.printStackTrace(); // ← Für besseres Debugging
+            e.printStackTrace();
             throw new BadRequestException("Login fehlgeschlagen");
         }
     }
@@ -173,7 +169,6 @@ public class AuthRessource {
                 expiresAt
             );
 
-            // ← AUCH HIER: Cookie bei Registrierung setzen
             NewCookie jwtCookie = new NewCookie.Builder("jwt")
                 .value(token)
                 .path("/")
@@ -194,16 +189,15 @@ public class AuthRessource {
         }
     }
 
-    // ← LOGOUT-ENDPOINT
+
     @POST
     @Path("/logout")
     @PermitAll
     public RestResponse<Object> logout() {
-        // Cookie löschen durch MaxAge=0
         NewCookie deleteCookie = new NewCookie.Builder("jwt")
             .value("")
             .path("/")
-            .maxAge(0)  // Sofort löschen
+            .maxAge(0) 
             .httpOnly(true)
             .build();
 
@@ -212,7 +206,8 @@ public class AuthRessource {
             .build();
     }
 
-    // Helper-Methode für JWT-Erstellung (unverändert)
+
+    // https://quarkus.io/guides/security-jwt-build
     private String createJwtToken(Kunde kunde) {
         return Jwt.issuer("pizza4me")
                   .upn(kunde.getUsername())

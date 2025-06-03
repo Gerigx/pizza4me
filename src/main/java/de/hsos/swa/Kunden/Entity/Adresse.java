@@ -6,10 +6,10 @@ import jakarta.persistence.Embeddable;
 public class Adresse {
     
     private String strasse;        
-    private String hausnummer;     // ← War vergessen!
-    private String plz;            // postalCode → plz
-    private String ort;            // city → ort
-    private String land;           // country → land
+    private String hausnummer;    
+    private String plz;            
+    private String ort;            
+    private String land;           
     
     public Adresse() {}
     

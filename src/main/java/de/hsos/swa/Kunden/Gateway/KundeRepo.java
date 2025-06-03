@@ -35,7 +35,6 @@ public class KundeRepo implements KundeCatalog, PanacheRepository<Kunde>{
             throw new IllegalArgumentException("Kunde mit ID " + id + " nicht gefunden");
         }
         
-        // Nur Geschäftsdaten updaten, NICHT Security-Felder!
         if (kunde.getVorname() != null) {
             existingKunde.setVorname(kunde.getVorname());
         }
@@ -61,7 +60,6 @@ public class KundeRepo implements KundeCatalog, PanacheRepository<Kunde>{
             throw new IllegalArgumentException("Kunde darf nicht null sein");
         }
         
-        // Prüfen ob Username bereits existiert
         if (find("username", kunde.getUsername()).firstResult() != null) {
             throw new IllegalArgumentException("Username bereits vergeben: " + kunde.getUsername());
         }
