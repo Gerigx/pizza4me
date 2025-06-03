@@ -119,35 +119,8 @@ public class KundenRessource {
         return RestResponse.created(URI.create("/kunde/" + createdKundeDTO.id));
     }
 
-    // Eigenes Profil abrufen (wie "me" endpoint)
-    @GET
-    @Path("/me")
-    @RestLink(rel = "self")
-    @RolesAllowed({"USER", "ADMIN"})
-    //@Blocking  // ← NEU: Auch hier!
-    public RestResponse<KundeDTO> getMyProfile() {
-        
-        Long kundeId = getCurrentKundeId();
-        if (kundeId == null) {
-            throw new BadRequestException("Kunde-ID nicht im Token gefunden");
-        }
 
-        Kunde kunde = kundeController.getKunde(kundeId);
-        if (kunde == null) {
-            throw new NotFoundException("Profil nicht gefunden");
-        }
 
-        return RestResponse.ok(KundeDTO.toDTO(kunde));
-    }
-
-    // Helper-Methoden (wie bei deiner Authorization-Logic)
-    private Long getCurrentKundeId() {
-        try {
-            return jwt.getClaim("kundeId");
-        } catch (Exception e) {
-            return null;
-        }
-    }
 
     private boolean isAdmin() {
         return jwt.getGroups().contains("ADMIN");

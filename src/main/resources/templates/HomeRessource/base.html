@@ -44,7 +44,7 @@
                                 👤 Mein Bereich
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="/kunden/me">📋 Mein Profil</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="goToMyProfile()">📋 Mein Profil</a></li>
                                 <li><a class="dropdown-item" href="/bestellungen/meine">🍕 Meine Bestellungen</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="#" onclick="logout()">🚪 Abmelden</a></li>
@@ -152,6 +152,28 @@
                 }, 1500);
             }
         }
+
+        function goToMyProfile() {
+        const userInfo = localStorage.getItem('userInfo');
+        if (userInfo) {
+            const user = JSON.parse(userInfo);
+            // Hier brauchen wir die kundeId aus dem JWT
+            // TODO: kundeId aus JWT Token extrahieren
+            window.location.href = '/kunde/' + getCurrentUserId();
+        } else {
+            window.location.href = '/auth/login';
+        }
+    }
+
+    function getCurrentUserId() {
+        // JWT Token dekodieren um kundeId zu bekommen
+        const token = localStorage.getItem('authToken');
+        if (token) {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return payload.kundeId;
+        }
+        return null;
+    }
         
         function clearAuthData() {
             localStorage.removeItem('authToken');

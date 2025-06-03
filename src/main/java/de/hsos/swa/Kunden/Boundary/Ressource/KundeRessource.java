@@ -1,5 +1,7 @@
 package de.hsos.swa.Kunden.Boundary.Ressource;
 
+import java.util.Set;
+
 import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
@@ -207,30 +209,60 @@ public class KundeRessource {
         return RestResponse.noContent();
     }
 
-    // Helper-Methoden für Authorization (wie bei deiner Business-Logic)
-    private boolean canAccessKunde(Long kundeId) {
-        // Admin kann alles
-        if (isAdmin()) {
-            return true;
-        }
-        
-        // User kann nur eigene Daten
-        Long currentKundeId = getCurrentKundeId();
-        return currentKundeId != null && currentKundeId.equals(kundeId);
-    }
-
-    private Long getCurrentKundeId() {
-        try {
-            return jwt.getClaim("kundeId");
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    private boolean isAdmin() {
-        return jwt.getGroups().contains("ADMIN");
+private boolean canAccessKunde(Long kundeId) {
+    System.out.println("🔍 canAccessKunde() Debug:");
+    System.out.println("  - Requested kundeId: " + kundeId);
+    
+    // Admin kann alles
+    boolean admin = isAdmin();
+    System.out.println("  - isAdmin(): " + admin);
+    
+    if (admin) {
+        System.out.println("  - ✅ Admin access granted");
+        return true;
     }
     
+    // User kann nur eigene Daten
+    Long currentKundeId = getCurrentKundeId();
+    System.out.println("  - getCurrentKundeId(): " + currentKundeId);
+    System.out.println("  - kundeId.equals(): " + (currentKundeId != null && currentKundeId.equals(kundeId)));
+    
+    return currentKundeId != null && currentKundeId.equals(kundeId);
+}
 
+private Long getCurrentKundeId() {
+    try {
+        Object kundeIdClaim = jwt.getClaim("kundeId");
+        System.out.println("  - JWT kundeId claim type: " + kundeIdClaim.getClass().getName());
+        System.out.println("  - JWT kundeId claim value: " + kundeIdClaim);
+        
+        // Simple toString() + parse approach
+        if (kundeIdClaim != null) {
+            String valueStr = kundeIdClaim.toString();
+            System.out.println("  - Converting string: " + valueStr);
+            return Long.parseLong(valueStr);
+        }
+        
+        System.out.println("  - kundeId claim is null");
+        return null;
+    } catch (Exception e) {
+        System.out.println("  - JWT ERROR: " + e.getMessage());
+        e.printStackTrace();
+        return null;
+    }
+}
+
+private boolean isAdmin() {
+    try {
+        Set<String> groups = jwt.getGroups();
+        System.out.println("  - JWT groups: " + groups);
+        boolean admin = groups.contains("ADMIN");
+        System.out.println("  - contains ADMIN: " + admin);
+        return admin;
+    } catch (Exception e) {
+        System.out.println("  - Groups ERROR: " + e.getMessage());
+        return false;
+    }
+}
 
 }

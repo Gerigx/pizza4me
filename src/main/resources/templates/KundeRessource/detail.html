@@ -1,108 +1,232 @@
 {#include HomeRessource/base.html}
-{#title}{kunde.getFullName}{/title}
+{#title}{kunde.getFullName} - Profil{/title}
 {#main}
 <div class="row">
     <div class="col-md-8">
-        <h1>{kunde.getFullName}</h1>
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>👤 {kunde.getFullName}</h1>
+            <span class="badge bg-primary fs-6">{kunde.role}</span>
+        </div>
         
+        <!-- Persönliche Daten -->
         <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">📋 Persönliche Daten</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">Persönliche Daten</h5>
-                <p><strong>Vorname:</strong> {kunde.vorname}</p>
-                <p><strong>Nachname:</strong> {kunde.nachname}</p>
-                <p><strong>Username:</strong> {kunde.username}</p>
-                <p><strong>Rolle:</strong> <span class="badge bg-primary">{kunde.role}</span></p>
-                <p><strong>ID:</strong> {kunde.id}</p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Vorname:</strong> {kunde.vorname}</p>
+                        <p><strong>Nachname:</strong> {kunde.nachname}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Username:</strong> {kunde.username}</p>
+                        <p><strong>Kunde ID:</strong> {kunde.id}</p>
+                    </div>
+                </div>
             </div>
         </div>
 
+        <!-- Adresse -->
         {#if kunde.adresse}
         <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">📍 Lieferadresse</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">📍 Adresse</h5>
-                <p>
-                    {kunde.adresse.strasse}<br>
+                <address class="mb-3">
+                    {kunde.adresse.strasse} {kunde.adresse.hausnummer}<br>
                     {kunde.adresse.plz} {kunde.adresse.ort}<br>
                     {kunde.adresse.land ?: 'Deutschland'}
-                </p>
-                <a href="/kunde/{kunde.id}/adresse" class="btn btn-sm btn-outline-primary">Adresse bearbeiten</a>
+                </address>
+                <a href="/kunde/{kunde.id}/adresse" class="btn btn-outline-primary btn-sm">✏️ Adresse bearbeiten</a>
             </div>
         </div>
         {#else}
         <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">📍 Lieferadresse</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">📍 Adresse</h5>
-                <p class="text-muted">Keine Adresse hinterlegt</p>
-                <a href="/kunde/{kunde.id}/adresse" class="btn btn-sm btn-primary">Adresse hinzufügen</a>
+                <p class="text-muted mb-3">Keine Lieferadresse hinterlegt</p>
+                <a href="/kunde/{kunde.id}/adresse" class="btn btn-primary btn-sm">➕ Adresse hinzufügen</a>
             </div>
         </div>
         {/if}
 
+        <!-- Bestellungen -->
         {#if kunde.orders && !kunde.orders.isEmpty()}
         <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">🍕 Bestellungen</h5>
+            </div>
             <div class="card-body">
-                <h5 class="card-title">📋 Bestellungen</h5>
                 <p><strong>Anzahl Bestellungen:</strong> {kunde.orders.size()}</p>
-                <small class="text-muted">Order IDs: {kunde.orders}</small>
+                <div class="d-flex flex-wrap gap-2">
+                    {#for orderId in kunde.orders}
+                    <span class="badge bg-secondary">#{orderId}</span>
+                    {/for}
+                </div>
+                <a href="/bestellungen/meine" class="btn btn-outline-success btn-sm mt-2">📋 Alle Bestellungen anzeigen</a>
+            </div>
+        </div>
+        {#else}
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">🍕 Bestellungen</h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-3">Noch keine Bestellungen</p>
+                <a href="/pizzen" class="btn btn-success btn-sm">🍕 Jetzt bestellen</a>
             </div>
         </div>
         {/if}
         
-        <div class="mt-4">
+        <!-- Action Buttons -->
+        <div class="d-flex gap-2 mt-4">
             <a href="/kunden" class="btn btn-secondary">← Zurück zur Liste</a>
-            <button class="btn btn-primary" onclick="editKunde({kunde.id})">Bearbeiten</button>
-            <button class="btn btn-danger" onclick="deleteKunde({kunde.id})">Löschen</button>
+            <button class="btn btn-primary" onclick="editKunde({kunde.id})">✏️ Bearbeiten</button>
+            <button class="btn btn-danger" onclick="deleteKunde({kunde.id})">🗑️ Löschen</button>
         </div>
     </div>
     
+    <!-- Sidebar -->
     <div class="col-md-4">
-        <!-- Debug Panel -->
-        <div class="card bg-light">
+        <!-- Quick Actions -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h6 class="card-title mb-0">⚡ Quick Actions</h6>
+            </div>
             <div class="card-body">
-                <h6>🔧 Debug Info</h6>
-                <p><strong>Template:</strong> KundeRessource/detail.html</p>
-                <p><strong>Kunde ID:</strong> {kunde.id}</p>
-
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-primary btn-sm" onclick="sendMessage({kunde.id})">
+                        💬 Nachricht senden
+                    </button>
+                    <button class="btn btn-outline-info btn-sm" onclick="viewOrders({kunde.id})">
+                        📊 Bestellhistorie
+                    </button>
+                    <button class="btn btn-outline-success btn-sm" onclick="newOrder({kunde.id})">
+                        🍕 Neue Bestellung
+                    </button>
+                </div>
             </div>
         </div>
         
-        <!-- JSON Debug -->
-        <div class="card bg-light mt-3">
+        <!-- API Debug -->
+        <div class="card bg-light">
+            <div class="card-header">
+                <h6 class="card-title mb-0">🔧 API Endpoints</h6>
+            </div>
             <div class="card-body">
-                <h6>📄 JSON API</h6>
-                <a href="/kunde/{kunde.id}" class="btn btn-sm btn-outline-info d-block mb-2" 
-                   onclick="fetch(this.href, {headers: {'Accept': 'application/json'}}).then(r=>r.json()).then(console.log)">
-                   GET /kunde/{kunde.id}
-                </a>
-                <a href="/kunde/{kunde.id}/adresse" class="btn btn-sm btn-outline-info d-block" 
-                   onclick="fetch(this.href, {headers: {'Accept': 'application/json'}}).then(r=>r.json()).then(console.log)">
-                   GET /kunde/{kunde.id}/adresse
-                </a>
+                <div class="d-grid gap-1">
+                    <button class="btn btn-outline-info btn-sm" onclick="testApiEndpoint('/kunde/{kunde.id}')">
+                        GET /kunde/{kunde.id}
+                    </button>
+                    <button class="btn btn-outline-info btn-sm" onclick="testApiEndpoint('/kunde/{kunde.id}/adresse')">
+                        GET /kunde/{kunde.id}/adresse
+                    </button>
+                </div>
+                <small class="text-muted mt-2 d-block">Responses in Browser Console</small>
             </div>
         </div>
     </div>
 </div>
 
+<!-- JavaScript (Qute-conflict-free!) -->
 <script>
+// Helper function to create headers object (Qute-safe)
+function createJsonHeaders() {
+    const headers = new Headers();
+    headers.append('Accept', 'application/json');
+    headers.append('Authorization', 'Bearer ' + getAuthToken());
+    return headers;
+}
+
+function getAuthToken() {
+    return localStorage.getItem('authToken') || '';
+}
+
+// Action Functions
 function editKunde(kundeId) {
-    // Später mit echtem Edit-Form
-    alert('Edit Kunde ' + kundeId + ' - noch nicht implementiert');
+    alert('Edit Kunde ' + kundeId + ' - Feature kommt bald!');
+    // TODO: Redirect zu Edit-Form
 }
 
 function deleteKunde(kundeId) {
     if (confirm('Kunde ' + kundeId + ' wirklich löschen?')) {
-        fetch('/kunde/' + kundeId, { method: 'DELETE' })
-            .then(response => {
-                if (response.ok) {
-                    alert('Kunde gelöscht!');
-                    window.location.href = '/kunden';
-                } else {
-                    alert('Fehler beim Löschen');
-                }
-            })
-            .catch(err => alert('Fehler: ' + err));
+        fetch('/kunde/' + kundeId, { 
+            method: 'DELETE',
+            headers: createJsonHeaders()
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Kunde gelöscht!');
+                window.location.href = '/kunden';
+            } else {
+                alert('Fehler beim Löschen');
+            }
+        })
+        .catch(err => alert('Fehler: ' + err));
     }
 }
+
+// Quick Actions
+function sendMessage(kundeId) {
+    alert('Nachricht an Kunde ' + kundeId + ' - Feature kommt bald!');
+}
+
+function viewOrders(kundeId) {
+    window.location.href = '/bestellungen?kundeId=' + kundeId;
+}
+
+function newOrder(kundeId) {
+    window.location.href = '/pizzen?kundeId=' + kundeId;
+}
+
+// API Testing
+function testApiEndpoint(endpoint) {
+    fetch(endpoint, { headers: createJsonHeaders() })
+        .then(r => r.json())
+        .then(data => {
+            console.log('API Response for ' + endpoint + ':', data);
+            alert('Response logged to console! Check F12 → Console');
+        })
+        .catch(err => {
+            console.error('API Error:', err);
+            alert('Error: ' + err.message);
+        });
+}
 </script>
+
+<style>
+/* Custom styling */
+.card {
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.badge {
+    font-size: 0.9em;
+}
+
+address {
+    font-style: normal;
+    line-height: 1.6;
+}
+
+.btn-group .btn {
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+</style>
 {/main}
 {/include}

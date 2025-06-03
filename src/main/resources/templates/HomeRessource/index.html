@@ -1,24 +1,130 @@
 {#include HomeRessource/base.html}
-    {#title}Pizze da Dio di Sanji{/title}
-    {#main}
-        <div class="container-fluid p-0">
+{#title}Pizze da Dio di Sanji{/title}
+{#main}
+<div class="container-fluid p-0">
 
-            <div class="text-white text-center d-flex flex-column justify-content-center align-items-center"
-                 style="background-image: url('/assets/pizza3.jpg');
-                background-size: cover;
-                background-position: center;
-                height: 400px;">
-                <h1 class="display-3 bg-dark bg-opacity-50 px-4 py-2 rounded">
-                    Pizze da Dio di Sanji
-                </h1>
-            </div>
+    <!-- Hero Section (dein bestehendes Design) -->
+    <div class="text-white text-center d-flex flex-column justify-content-center align-items-center"
+         style="background-image: url('/assets/pizza3.jpg');
+         background-size: cover;
+         background-position: center;
+         height: 400px;">
+        <h1 class="display-3 bg-dark bg-opacity-50 px-4 py-2 rounded mb-3">
+            Pizze da Dio di Sanji
+        </h1>
+        <p class="lead bg-dark bg-opacity-50 px-3 py-2 rounded">
+            Authentische italienische Pizza, frisch zubereitet
+        </p>
+    </div>
 
-            <div class="text-center mt-5 mb-5">
-                <a href="/pizzen" class="btn btn-lg btn-primary px-5 py-3 mb-3">🍕 Zu den Pizzen</a><br>
-                <a href="/login" class="btn btn-outline-secondary me-2">🔐 Anmelden</a>
-                <a href="/registrieren" class="btn btn-outline-secondary">📝 Registrieren</a>
-            </div>
-
+    <!-- Main CTA -->
+    <div class="text-center py-5">
+        <div id="guestCTA">
+            <a href="/pizzen" class="btn btn-lg btn-primary px-5 py-3 me-3 mb-3">🍕 Pizzen entdecken</a>
+            <a href="/auth/register" class="btn btn-lg btn-outline-primary px-5 py-3 mb-3">📝 Jetzt bestellen</a>
         </div>
-    {/main}
+        
+        <div id="userCTA" class="d-none">
+            <a href="/pizzen" class="btn btn-lg btn-primary px-5 py-3 me-3 mb-3">🍕 Pizzen bestellen</a>
+            <a href="/kunden/me" class="btn btn-lg btn-outline-secondary px-4 py-3 mb-3">👤 Mein Profil</a>
+        </div>
+    </div>
+
+    <!-- Features (einfach & clean) -->
+    <div class="container py-5">
+        <div class="row text-center">
+            <div class="col-md-4 mb-4">
+                <div class="p-4">
+                    <div class="display-4 mb-3">🚀</div>
+                    <h5>Schnelle Lieferung</h5>
+                    <p class="text-muted">Frisch und heiß in 30 Minuten</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="p-4">
+                    <div class="display-4 mb-3">🌿</div>
+                    <h5>Frische Zutaten</h5>
+                    <p class="text-muted">Täglich frisch aus Italien</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="p-4">
+                    <div class="display-4 mb-3">❤️</div>
+                    <h5>Mit Liebe gemacht</h5>
+                    <p class="text-muted">Traditionelle Familienrezepte</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Simple Stats -->
+    <div class="bg-primary text-white py-5">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-4 mb-3">
+                    <h3 class="display-4">500+</h3>
+                    <p>Zufriedene Kunden</p>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h3 class="display-4">50+</h3>
+                    <p>Pizza-Variationen</p>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <h3 class="display-4">⭐⭐⭐⭐⭐</h3>
+                    <p>Durchschnittliche Bewertung</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Final CTA -->
+    <div class="text-center py-5">
+        <h3 class="mb-4">Bereit für die beste Pizza der Stadt?</h3>
+        <a href="/pizzen" class="btn btn-lg btn-success px-5 py-3">🍕 Jetzt bestellen</a>
+    </div>
+
+</div>
+
+<!-- Simple JavaScript für dynamische CTAs -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if user is logged in
+    const token = localStorage.getItem('authToken');
+    const userInfo = localStorage.getItem('userInfo');
+    
+    if (token && userInfo) {
+        // User is logged in - show user CTA
+        document.getElementById('guestCTA').classList.add('d-none');
+        document.getElementById('userCTA').classList.remove('d-none');
+    } else {
+        // User not logged in - show guest CTA  
+        document.getElementById('guestCTA').classList.remove('d-none');
+        document.getElementById('userCTA').classList.add('d-none');
+    }
+});
+</script>
+
+<style>
+/* Smooth hover effects */
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Features hover effect */
+.col-md-4 > div {
+    transition: all 0.3s ease;
+    border-radius: 10px;
+}
+
+.col-md-4:hover > div {
+    background-color: #f8f9fa;
+    transform: translateY(-5px);
+}
+</style>
+{/main}
 {/include}

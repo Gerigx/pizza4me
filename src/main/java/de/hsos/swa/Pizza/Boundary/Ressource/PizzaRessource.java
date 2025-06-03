@@ -15,7 +15,7 @@ import org.jboss.resteasy.reactive.common.util.RestMediaType;
 import de.hsos.swa.Pizza.Boundary.DTO.PizzaDTO;
 import de.hsos.swa.Pizza.Controller.PizzaController;
 import de.hsos.swa.Pizza.Entity.Pizza;
-
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -73,6 +73,7 @@ public class PizzaRessource {
 
 
     @POST
+    @RolesAllowed("ADMIN")
     //@Path("/bearbeiten")
     @Retry(maxRetries = 3, delay = 1000)
     @CircuitBreaker(requestVolumeThreshold = 10, failureRatio = 0.5)
