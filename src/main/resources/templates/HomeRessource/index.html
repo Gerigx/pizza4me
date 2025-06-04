@@ -26,7 +26,7 @@
         
         <div id="userCTA" class="d-none">
             <a href="/pizzen" class="btn btn-lg btn-primary px-5 py-3 me-3 mb-3">🍕 Pizzen bestellen</a>
-            <a href="/kunden/me" class="btn btn-lg btn-outline-secondary px-4 py-3 mb-3">👤 Mein Profil</a>
+            <a href="#" onclick="goToMyProfile()" class="btn btn-lg btn-outline-secondary px-4 py-3 mb-3">👤 Mein Profil</a>
         </div>
     </div>
 
@@ -87,7 +87,7 @@
 
 <!-- Simple JavaScript für dynamische CTAs -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function() {
     // Check if user is logged in
     const token = localStorage.getItem('authToken');
     const userInfo = localStorage.getItem('userInfo');
@@ -102,6 +102,25 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('userCTA').classList.add('d-none');
     }
 });
+
+    function goToMyProfile() {
+        const userInfo = localStorage.getItem('userInfo');
+        if (userInfo) {
+            const user = JSON.parse(userInfo);
+            window.location.href = '/kunde/' + getCurrentUserId();
+        } else {
+            window.location.href = '/auth/login';
+        }
+    }
+
+    function getCurrentUserId() {
+        const token = localStorage.getItem('authToken');
+        if (token) {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return payload.kundeId;
+        }
+        return null;
+    }
 </script>
 
 <style>
