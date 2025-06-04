@@ -9,8 +9,10 @@
         
         <div class="mt-4">
             <a href="/pizzen" class="btn btn-secondary">← Zurück zur Liste</a>
+            {#if isAdmin}
             <a href="/pizzen/{pizza.id}/bearbeiten" class="btn btn-primary">Bearbeiten</a>
-            <button class="btn btn-success" onclick="bestellen({pizza.id})">Bestellen</button>
+            {/if}
+            <a href="/bestellungen/neu" class="btn btn-success " >Bestellen</a>
         </div>
     </div>
 </div>

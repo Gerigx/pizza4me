@@ -6,6 +6,7 @@ import java.util.List;
 
 
 // resillienz
+import io.quarkus.security.identity.SecurityIdentity;
 import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
@@ -53,11 +54,19 @@ public class PizzenRessource {
     @Inject
     PizzaController pizzaController;
 
+    @Inject
+    SecurityIdentity identity;
+
+    private boolean checkIfCurrentUserIsAdmin() {
+        return identity.hasRole("ADMIN");
+    }
+
+
     //html endpoints
     @CheckedTemplate
     public static class Templates {
         @Location("HomeRessource/list")
-        public static native TemplateInstance list(List<Pizza> pizzen);
+        public static native TemplateInstance list(List<Pizza> pizzen, boolean isAdmin);
     }
 
     @GET
@@ -66,12 +75,14 @@ public class PizzenRessource {
             @QueryParam("page") @DefaultValue("0") @Min(0) int page,
             @QueryParam("size") @DefaultValue("20") @Min(1) @Max(100) int size
     ) {
+        boolean isAdmin = checkIfCurrentUserIsAdmin();
+
         List<Pizza> pizzen = pizzaController.getAllPizzas(page, size); // deine bestehende Logik
         pizzen.stream()
                 .sorted(Comparator.comparing(Pizza::getId))
                 .map(PizzaDTO::toDTO)
                 .toList();
-        return Templates.list(pizzen);
+        return Templates.list(pizzen, isAdmin);
     }
 
 

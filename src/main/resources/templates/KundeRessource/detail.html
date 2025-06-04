@@ -90,47 +90,6 @@
             <button class="btn btn-danger" onclick="deleteKunde({kunde.id})">🗑️ Löschen</button>
         </div>
     </div>
-    
-    <!-- Sidebar -->
-    <div class="col-md-4">
-        <!-- Quick Actions -->
-        <div class="card mb-3">
-            <div class="card-header">
-                <h6 class="card-title mb-0">⚡ Quick Actions</h6>
-            </div>
-            <div class="card-body">
-                <div class="d-grid gap-2">
-                    <button class="btn btn-outline-primary btn-sm" onclick="sendMessage({kunde.id})">
-                        💬 Nachricht senden
-                    </button>
-                    <button class="btn btn-outline-info btn-sm" onclick="viewOrders({kunde.id})">
-                        📊 Bestellhistorie
-                    </button>
-                    <button class="btn btn-outline-success btn-sm" onclick="newOrder({kunde.id})">
-                        🍕 Neue Bestellung
-                    </button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- API Debug -->
-        <div class="card bg-light">
-            <div class="card-header">
-                <h6 class="card-title mb-0">🔧 API Endpoints</h6>
-            </div>
-            <div class="card-body">
-                <div class="d-grid gap-1">
-                    <button class="btn btn-outline-info btn-sm" onclick="testApiEndpoint('/kunde/{kunde.id}')">
-                        GET /kunde/{kunde.id}
-                    </button>
-                    <button class="btn btn-outline-info btn-sm" onclick="testApiEndpoint('/kunde/{kunde.id}/adresse')">
-                        GET /kunde/{kunde.id}/adresse
-                    </button>
-                </div>
-                <small class="text-muted mt-2 d-block">Responses in Browser Console</small>
-            </div>
-        </div>
-    </div>
 </div>
 
 <!-- JavaScript (Qute-conflict-free!) -->

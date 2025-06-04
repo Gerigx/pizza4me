@@ -3,6 +3,7 @@ package de.hsos.swa.Pizza.Boundary.Ressource;
 import io.quarkus.qute.CheckedTemplate;
 import io.quarkus.qute.Location;
 import io.quarkus.qute.TemplateInstance;
+import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
@@ -33,10 +34,17 @@ public class PizzaRessource {
     @Inject
     PizzaController pizzaController;
 
+    @Inject
+    SecurityIdentity identity;
+
+    private boolean checkIfCurrentUserIsAdmin() {
+        return identity.hasRole("ADMIN");
+    }
+
     @CheckedTemplate
     public static class Templates {
         @Location("PizzaRessource/detail")
-        public static native TemplateInstance detail(Pizza pizza);
+        public static native TemplateInstance detail(Pizza pizza, boolean isAdmin);
         @Location("PizzaRessource/edit")
         public static native TemplateInstance edit(Pizza pizza);
         @Location("PizzaRessource/create")
@@ -50,7 +58,8 @@ public class PizzaRessource {
         if (pizza == null) {
             throw new WebApplicationException(404);
         }
-        return PizzaRessource.Templates.detail(pizza);
+        boolean isAdmin = checkIfCurrentUserIsAdmin();
+        return PizzaRessource.Templates.detail(pizza, isAdmin);
     }
 
     @GET
