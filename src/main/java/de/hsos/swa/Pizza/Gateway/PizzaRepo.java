@@ -7,7 +7,7 @@ import de.hsos.swa.Pizza.Entity.PizzaCatalog;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 
-import io.quarkus.hibernate.orm.panache.PanacheQuery;
+
 import io.quarkus.panache.common.Page;
 
 @ApplicationScoped

@@ -33,6 +33,14 @@ public class BestellungRepo implements BestellungKatalog, PanacheRepository<Best
     }
 
     @Override
+    public List<Bestellung> getBestellungenByKundeId(long kundeId, int page, int size) {
+        return find("kundeId", kundeId)
+                .page(Page.of(page, size))
+                .stream()
+                .toList();
+    }
+
+    @Override
     @Transactional
     public Bestellung createBestellung(Bestellung bestellung) {
         this.persist(bestellung);

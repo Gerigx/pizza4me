@@ -5,7 +5,7 @@ import java.util.List;
 import de.hsos.swa.Pizza.Entity.Pizza;
 import de.hsos.swa.Pizza.Entity.PizzaCatalog;
 import de.hsos.swa.shared.Events.PizzaBestelltEvent;
-import io.quarkus.panache.common.Page;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.ObservesAsync;
 import jakarta.inject.Inject;

@@ -8,6 +8,8 @@ import jakarta.inject.Inject;
 
 import java.util.List;
 
+import com.arjuna.ats.internal.jdbc.drivers.modifiers.list;
+
 @ApplicationScoped
 public class BestellungService implements BestellungController {
     @Inject
@@ -41,5 +43,10 @@ public class BestellungService implements BestellungController {
     @Override
     public boolean isExisting(long id) {
         return false;
+    }
+
+    @Override
+    public List<Bestellung> getBestellungenByKundeId(long kundeId, int page, int size) {
+        return List.of();
     }
 }

@@ -59,6 +59,9 @@ public class BestellungenRessource {
 
         @Location("BestellungenRessource/neu") 
         public static native TemplateInstance neu(List<Pizza> verfuegbarePizzen);
+
+        @Location("BestellungenRessource/meine") 
+        public static native TemplateInstance meine(List<BestellungDTO> bestellungen);
     }
 
     @GET
@@ -152,6 +155,57 @@ public class BestellungenRessource {
         BestellungDTO responseDTO = BestellungDTO.toDTO(gespeicherteBestellung);
 
         return RestResponse.created(URI.create("/bestellung/" + gespeicherteBestellung.getId()));
+    }
+
+
+    @GET
+    @Path("/meine")
+    @Produces(MediaType.TEXT_HTML)
+    @RolesAllowed({"USER", "ADMIN"})
+    public TemplateInstance getMeineBestellungenHTML(@QueryParam("page") @DefaultValue("0") int page,
+                                                    @QueryParam("size") @DefaultValue("10") int size) {
+        // Kunde ID aus JWT holen
+        Long kundeId = getCurrentKundeId();
+        if (kundeId == null) {
+            throw new WebApplicationException("Kunde ID nicht im Token gefunden", 401);
+        }
+
+        // Nur Bestellungen des eingeloggten Users laden
+        List<Bestellung> meineBestellungen = bestellungKatalog.getBestellungenByKundeId(kundeId, page, size);
+        
+        List<BestellungDTO> bestellungDTOs = meineBestellungen.stream()
+                .sorted()
+                .map(BestellungDTO::toDTO)
+                .toList();
+        
+        System.out.println("👤 Lade " + bestellungDTOs.size() + " Bestellungen für Kunde " + kundeId);
+        
+        return BestellungenRessource.Templates.meine(bestellungDTOs);
+    }
+
+    @GET
+    @Path("/meine")
+    @Produces({MediaType.APPLICATION_JSON, RestMediaType.APPLICATION_HAL_JSON})
+    @RolesAllowed({"USER", "ADMIN"})
+    public RestResponse<List<BestellungDTO>> getMeineBestellungenJSON(@QueryParam("page") @DefaultValue("0") int page,
+                                                                    @QueryParam("size") @DefaultValue("10") int size) {
+        Long kundeId = getCurrentKundeId();
+        if (kundeId == null) {
+            throw new BadRequestException("Kunde ID nicht im Token gefunden");
+        }
+
+        List<Bestellung> meineBestellungen = bestellungKatalog.getBestellungenByKundeId(kundeId, page, size);
+        
+        if (meineBestellungen.isEmpty()) {
+            throw new NotFoundException("Keine Bestellungen gefunden");
+        }
+
+        List<BestellungDTO> bestellungDTOs = meineBestellungen.stream()
+                .sorted()
+                .map(BestellungDTO::toDTO)
+                .toList();
+
+        return RestResponse.ok(bestellungDTOs);
     }
 
     private Long getCurrentKundeId() {

@@ -1,0 +1,126 @@
+{#include HomeRessource/base.html}
+{#title}Meine Bestellungen{/title}
+{#main}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>🍕 Meine Bestellungen</h1>
+                <a href="/bestellungen/neu" class="btn btn-success">
+                    ➕ Neue Bestellung
+                </a>
+            </div>
+
+            {#if bestellungen}
+            <!-- Bestellungen Liste -->
+            <div class="row">
+                {#for bestellung in bestellungen}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 bestellung-card" onclick="openBestellung({bestellung.kundeId})">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0">🧾 Bestellung #{bestellung.kundeId}</h6>
+                            <span class="badge {#switch bestellung.zustand}
+                                {#case 'Neu'}bg-primary{/case}
+                                {#case 'InBearbeitung'}bg-warning{/case}
+                                {#case 'Abgeschlossen'}bg-success{/case}
+                                {#case 'Fehlgeschlagen'}bg-danger{/case}
+                            {/switch}">{bestellung.zustand}</span>
+                        </div>
+                        
+                        <div class="card-body">
+                            <!-- Datum -->
+                            <p class="text-muted mb-2">
+                                📅 {bestellung.bestellDatum}
+                            </p>
+                            
+                            <!-- Items Übersicht -->
+                            <div class="mb-3">
+                                <strong>🍕 Bestellte Pizzen:</strong>
+                                <div class="mt-2">
+                                    {#if bestellung.items}
+                                        {#for item in bestellung.items}
+                                        <div class="d-flex justify-content-between align-items-center py-1 border-bottom">
+                                            <span class="small">{item.pizzaName}</span>
+                                            <div class="text-end">
+                                                <span class="badge bg-light text-dark">{item.quantity}x</span>
+                                                <span class="small text-muted ms-1">{item.gesamtpreis}€</span>
+                                            </div>
+                                        </div>
+                                        {/for}
+                                    {#else}
+                                    <span class="text-muted small">Keine Items</span>
+                                    {/if}
+                                </div>
+                            </div>
+                            
+                            <!-- Hinweis -->
+                            {#if bestellung.hinweis}
+                            <div class="mb-2">
+                                <small class="text-muted">💬 {bestellung.hinweis}</small>
+                            </div>
+                            {/if}
+                        </div>
+                        
+                        <div class="card-footer d-flex justify-content-between align-items-center">
+                            <strong class="text-success">💰 {bestellung.gesamtPreis}€</strong>
+                            <button class="btn btn-outline-primary btn-sm" onclick="event.stopPropagation(); openBestellung({bestellung.kundeId})">
+                                👁️ Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {/for}
+            </div>
+            
+            {#else}
+            <!-- Keine Bestellungen -->
+            <div class="text-center py-5">
+                <div class="display-1 text-muted mb-4">🍕</div>
+                <h3 class="text-muted mb-3">Noch keine Bestellungen</h3>
+                <p class="text-muted mb-4">
+                    Du hast noch keine Pizza bestellt. Zeit, das zu ändern!
+                </p>
+                <a href="/pizzen" class="btn btn-success btn-lg">
+                    🍕 Jetzt bestellen
+                </a>
+            </div>
+            {/if}
+        </div>
+    </div>
+</div>
+
+<script>
+function openBestellung(bestellungId) {
+    window.location.href = '/bestellung/' + bestellungId;
+}
+</script>
+
+<style>
+.bestellung-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.bestellung-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.badge {
+    font-size: 0.75em;
+}
+
+.card-footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+}
+
+.border-bottom:last-child {
+    border-bottom: none !important;
+}
+</style>
+{/main}
+{/include}

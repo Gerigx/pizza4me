@@ -19,7 +19,7 @@ public class Bestellung implements Comparable<Bestellung> {
     private Timestamp bestellDatum;
     private BigDecimal gesamtPreis;
 
-    @OneToMany(mappedBy = "bestellung", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "bestellung", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<BestellungItem> bestellungItems = new ArrayList<>();
 
     public Bestellung() {
